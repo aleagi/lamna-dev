@@ -1,47 +1,48 @@
 # Lamna Dev Analyzer
 
-**Lamna Dev Analyzer** é uma extensão projetada para navegadores Chromium (Chrome, Edge, Brave) que permite a análise estrutural da DOM em tempo real e de forma não intrusiva. A extensão destaca os elementos da tela baseados nas coordenadas do mouse instantaneamente, exibindo caixas de texto flutuantes super responsivas e temas estéticos impressionantes.
+**Lamna Dev Analyzer** is an extension designed for Chromium browsers (Chrome, Edge, Brave) that allows structural analysis of the DOM in real-time and non-intrusively. The extension highlights elements on the screen based on instant mouse coordinates, displaying highly responsive floating text boxes and stunning aesthetic themes.
 
-## 🚀 Funcionalidades
+## 🚀 Features
 
-- **Rastreamento em Tempo Real:** Segue o fluxo do mouse identificando `<Tags>`, `.classes`, e as dimensões (Width x Height).
-- **Réguas Canvas Autogeridas:** Contém marcações dinâmicas a cada 10/50/100 pixels renderizadas perfeitamente de acordo com o redimensionamento da tela.
-- **Sistema de Temas Completo:** Se ajusta a sua preferência.
-  - **Neon Tech:** O padrão. Caixas semi-transparentes de estética Glassmorphism, com bordas limpas e focadas.
-  - **LCD Âmbar:** Para uso old-school. Bordas apagadas, pixels na tela simulando uma placa Matrix LCD verdadeira (Theme Ambar).
-  - **The Matrix:** Um tema "hacker" verde-escuro diretamente extraído de displays de terminais.
-  - **Dinâmico (Auto):** A extensão detecta inteligentemente a cor dominante ou theme-color do site em que você está navegando e calcula o contraste das fontes automaticamente, gerando um esquema de cores próprio!
-- **Modo Detetive (Hold `Ctrl`):** Revela a hierarquia completa e atributos ocultos de estilização de maneira instantânea, como:
-  - Espaçamentos (Paddings, Margins e Box-Sizing)
-  - Posicionamentos (Top, Left, Right, Bottom e Z-Index)
-  - Cores Reais e Visuais (Text Color, Background Color, Opacidade e renderizacao RGB literal com paleta vizualizada)
-  - Tipografia (Família de fontes e tamanhos computados).
-- **Congelamento de Inspeção (Hold `Ctrl` + `Click`):** Precisa copiar a classe de um elemento inspecionado? Ao clicar no elemento segurando o Control, a caixa ficará travada na tela (Freeze mode), te permitindo usar o mouse para selecionar os textos dentro da *Info box*. Clique novamente para descongelar.
+- **Real-Time Tracking:** Follows the mouse flow identifying `<Tags>`, `.classes`, and dimensions (Width x Height).
+- **Self-Managed Canvas Rulers:** Contains dynamic markings every 10/50/100 pixels perfectly rendered according to screen resizing.
+- **Complete Theme System:** Adjusts to your preference.
+  - **Neon Tech:** Semi-transparent boxes with Glassmorphism aesthetics, clean and focused borders.
+  - **Amber LCD:** For old-school use. Faded borders, on-screen pixels simulating a true Matrix LCD board (Ambar Theme).
+  - **The Matrix:** A dark-green "hacker" theme directly extracted from terminal displays.
+  - **Dynamic (Auto):** (The Default) The extension intelligently detects the dominant color or theme-color of the website you are browsing and automatically calculates the colors, generating its own color scheme!
+- **Detective Mode (Hold `Ctrl`):** Instantly reveals the complete hierarchy and hidden styling attributes, such as:
+  - Spacing (Paddings, Margins, and Box-Sizing)
+  - Positioning (Top, Left, Right, Bottom, and Z-Index)
+  - Real and Visual Colors (Text Color, Background Color, Opacity, and literal RGB rendering with a visualized palette)
+  - Typography (Font family and computed sizes).
+- **Inspection Freeze (Hit `F`):** Need to copy the class of an inspected element? Just by pressing the `F` key while pointing at the element, the box will be locked on the screen (Freeze mode), allowing you to use the mouse to select text inside the *Info box*. Press `F` again (or click outside) to unfreeze.
+- **Automatic Contrast Analysis (WCAG):** When in Detective Mode (holding `Ctrl`), the extension calculates the contrast ratio (Luminance ratio) between the text color and the actual background color rendered on the element. It approves or fails accessibility based on the requirement level (A, AA, or AAA) set in the extension panel.
+- **Adjustable Zoom:** Through the extension button in the browser (Popup), you can freely change the scale/zoom of the display box (between 0.5x and 2.0x).
 
-## ⌨️ Atalhos Essenciais
+## ⌨️ Essential Shortcuts
 
-| Atalho | Ação | Descrição |
+| Shortcut | Action | Description |
 | --- | --- | --- |
-| `Ctrl + Shift + L` | **Ligar/Desligar Visor** | Oculta rapidamente todas as linhas, regras e caixas da extensão sem precisar desinstalar ou desativar na loja, voltando a interagir com a página de modo 100% normal. |
-| `Segurar Ctrl` | **Informações Avançadas** | Amplia o Info Box com dados estendidos (Parent Nodes, Hierarquia e Computed Styles) úteis para designers e CSS. |
-| `Segurar Ctrl + Clicar (LCE)` | **Congelar Tela** | Congela o estado atual do tooltip. Isso permite mover o mouse livremente e **selecionar textos** que aparecem no tooltip do componente. Clique de novo com `Ctrl` em qualquer lugar para descongelar. |
+| `Alt + L` | **Toggle Display** | Quickly hides all lines, rulers, and boxes of the extension without needing to uninstall or disable it in the store, returning to normal interaction with the page. |
+| `Hold Ctrl` | **Advanced Information** | Expands the Info Box with extended data (Parent Nodes, Hierarchy, and Computed Styles) useful for designers and CSS. |
+| `F Key` | **Freeze Screen** | Freezes the current state of the tooltip. This allows you to freely move the mouse and **select texts** that appear in the component tooltip. Press `F` again (or click outside) to unfreeze. |
 
-## 📦 Como instalar
+## 📦 How to install
 
-Como a extensão ainda está em desenvolvimento:
-1. Acesse o painel de extensões do seu navegador (`chrome://extensions/` no Chrome ou `edge://extensions/` no Edge).
-2. Marque a caixa de seleção e ative o **"Modo de Desenvolvedor"**.
-3. Clique em **"Carregar sem compactação"** (Load Unpacked).
-4. Selecione a pasta onde clonou este projeto. Pronto! A extensão estará disponível em todos os sites que visitar.
+Since the extension is still in development:
+1. Access your browser's extensions panel (`chrome://extensions/` in Chrome or `edge://extensions/` in Edge).
+2. Check the box and enable **"Developer mode"**.
+3. Click on **"Load unpacked"**.
+4. Select the folder where you cloned this project. Done! The extension is now available on all sites you visit.
 
 ---
 
-## 🔮 Roadmap / Ideias Futuras
-Queremos tornar o Lamna Dev Analyzer ainda mais indispensável no dia a dia. Aqui estão algumas ideias sendo avaliadas para implementação:
-1. **Analisa de Contraste Automático:** Inspecionar o nível de acessibilidade (WCAG) entre as cores da fonte e do fundo do elemento selecionado para identificar textos ilegíveis.
-2. **Editor "Inline" Instantâneo:** Possibilidade de dar _dois cliques_ na área congelada da caixa de infos para alterar um padding ou cor e ver a mudança aplicada diretamente na renderização do site.
-3. **Capture Mode (Imagens):** Botão/atalho no popup congelado para extrair/baixar perfeitamente apenas a div congelada para uma imagem PNG (como se fosse um recorte cirúrgico guiado pela engine de DOM).
-4. **Wireframe Mode:** Um botão/atalho que desenha instantaneamente bordas transparentes em volta de absolutamente todas as divs dentro de um container selecionado exibindo a malha do site.
-5. **Color-Picker embutido:** Uma "pipeta" (Eyedropper) ou tecla rápida pra copiar o código HEX de onde seu mouse passou, baseada no CSS lido (não num bitmap).
+## 🔮 Roadmap / Future Ideas
+We want to make Lamna Dev Analyzer even more indispensable in your daily routine. Here are some ideas being evaluated for implementation:
+1. **Instant "Inline" Editor:** Ability to double-click in the frozen area of the info box to change a padding or color and see the change instantly applied to the website's rendering.
+2. **Capture Mode (Images):** Button/shortcut on the frozen popup to perfectly extract/download only the frozen div as a PNG image (like a surgical cutout guided by the DOM engine).
+3. **Wireframe Mode:** A button/shortcut that instantly draws transparent borders around absolutely all divs within a selected container to display the website's mesh.
+4. **Built-in Color-Picker:** An eyedropper tool or quick key to copy the HEX code from where your mouse passed, based on the read CSS (not a bitmap).
 
-> Desenvolvido com muito café e precisão de layout. Em constante experimentação estética! 🧡
+> Developed with a lot of coffee and layout precision. In constant aesthetic experimentation! 🧡

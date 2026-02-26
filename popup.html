@@ -37,14 +37,14 @@
 </head>
 
 <body>
-  <h3>Escolha o Tema:</h3>
+  <h3>Choose Theme:</h3>
   <div class="theme-option">
     <input type="radio" id="neon" name="theme" value="neon">
-    <label for="neon">Neon Tech (Padrão)</label>
+    <label for="neon">Neon Tech</label>
   </div>
   <div class="theme-option">
     <input type="radio" id="ambar" name="theme" value="ambar">
-    <label for="ambar">LCD Âmbar (Clássico)</label>
+    <label for="ambar">Amber LCD (Classic)</label>
   </div>
   <div class="theme-option">
     <input type="radio" id="matrix" name="theme" value="matrix">
@@ -52,8 +52,33 @@
   </div>
   <div class="theme-option">
     <input type="radio" id="dynamic" name="theme" value="dynamic">
-    <label for="dynamic">Dinâmico (Cores do Site)</label>
+    <label for="dynamic">Dynamic (Site Colors) (Default)</label>
   </div>
+
+  <hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
+
+  <h3>Contrast Level (WCAG):</h3>
+  <div class="theme-option">
+    <input type="radio" id="wcag-a" name="wcag" value="A">
+    <label for="wcag-a">A (Low)</label>
+  </div>
+  <div class="theme-option">
+    <input type="radio" id="wcag-aa" name="wcag" value="AA">
+    <label for="wcag-aa">AA (Medium - Default)</label>
+  </div>
+  <div class="theme-option">
+    <input type="radio" id="wcag-aaa" name="wcag" value="AAA">
+    <label for="wcag-aaa">AAA (High)</label>
+  </div>
+
+  <hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
+
+  <h3>Box Zoom (X):</h3>
+  <div style="display:flex; align-items:center; margin-bottom: 5px;">
+    <input type="range" id="zoom-range" min="0.5" max="2.0" step="0.1" value="1.0" style="flex:1;">
+    <span id="zoom-val" style="margin-left:8px; font-weight:bold; font-size:12px; width:28px;">1.0x</span>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 

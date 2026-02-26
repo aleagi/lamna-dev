@@ -123,6 +123,8 @@
     text-shadow: var(--lamna-text-shadow);
     transition: opacity 0.1s ease;
     min-width: unset;
+    transform: scale(var(--lamna-zoom, 1));
+    transform-origin: top left;
 }
 
 #lamna-info-box.lamna-frozen {

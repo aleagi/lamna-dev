@@ -2,16 +2,38 @@
     if (window.__lamna_injected) return;
     window.__lamna_injected = true;
 
-    // The external font loading was removed to prevent CSP side-effects on strict websites (like GitHub).
-    // The CSS already falls back gracefully to 'Courier New' or standard system monospace.
+    // Inject font dynamically, bypassing the __MSG_@@extension_id__ CSS parsing bug
+    const fontStyle = document.createElement('style');
+    fontStyle.textContent = `
+        @font-face {
+            font-family: 'Share Tech Mono';
+            src: url('${chrome.runtime.getURL("fonts/ShareTechMono.woff2")}') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+    `;
+    document.head.appendChild(fontStyle);
 
     const container = document.createElement('div');
     container.id = 'lamna-container';
 
-    let currentTheme = 'neon'; // Default to start
+    let currentTheme = 'dynamic'; // Default to start
+    let currentWcag = 'AA'; // Default WCAG level
 
     function getBrightness(r, g, b) {
         return (r * 299 + g * 587 + b * 114) / 1000;
+    }
+
+    function getEffectiveBackgroundColor(el) {
+        let current = el;
+        while (current && current !== document) {
+            let bg = window.getComputedStyle(current).backgroundColor;
+            if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+                return bg;
+            }
+            current = current.parentElement;
+        }
+        return 'rgb(255, 255, 255)'; // fallback to white if nothing found
     }
 
     function parseColor(colorStr) {
@@ -25,6 +47,61 @@
             return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
         }
         return { r: 0, g: 0, b: 0 };
+    }
+
+    function getLuminance(r, g, b) {
+        const a = [r, g, b].map(function (v) {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    // Try to extract :hover styles from document stylesheets
+    function getHoverStyles(el) {
+        let hoverBg = null;
+        let hoverColor = null;
+        try {
+            for (let i = 0; i < document.styleSheets.length; i++) {
+                let sheet = document.styleSheets[i];
+                try {
+                    let rules = sheet.cssRules || sheet.rules;
+                    if (!rules) continue;
+                    for (let j = 0; j < rules.length; j++) {
+                        let rule = rules[j];
+                        if (rule.type === 1 && rule.selectorText && rule.selectorText.includes(':hover')) {
+                            let selectors = rule.selectorText.split(',');
+                            for (let sel of selectors) {
+                                if (sel.includes(':hover')) {
+                                    // Remove pseudo-classes to check if the base element matches
+                                    let cleanSel = sel.replace(/:hover/g, '').replace(/:focus/g, '').replace(/:active/g, '').trim();
+                                    // We also don't want empty selectors matching everything
+                                    if (cleanSel && cleanSel !== '*' && el.matches(cleanSel)) {
+                                        if (rule.style.backgroundColor && rule.style.backgroundColor !== 'rgba(0, 0, 0, 0)' && rule.style.backgroundColor !== 'transparent' && rule.style.backgroundColor !== 'initial') {
+                                            hoverBg = rule.style.backgroundColor;
+                                        }
+                                        if (rule.style.color && rule.style.color !== 'initial') {
+                                            hoverColor = rule.style.color;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Ignore CORS issues on external stylesheets
+                }
+            }
+        } catch (e) { }
+        return { hoverBg, hoverColor };
+    }
+
+    function getContrastRatio(color1, color2) {
+        const lum1 = getLuminance(color1.r, color1.g, color1.b);
+        const lum2 = getLuminance(color2.r, color2.g, color2.b);
+        const brightest = Math.max(lum1, lum2);
+        const darkest = Math.min(lum1, lum2);
+        return (brightest + 0.05) / (darkest + 0.05);
     }
 
     function applyTheme(theme) {
@@ -84,13 +161,21 @@
     }
 
     if (chrome && chrome.storage && chrome.storage.sync) {
-        chrome.storage.sync.get(['lamnaTheme'], function (result) {
-            applyTheme(result.lamnaTheme || 'neon');
+        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom'], function (result) {
+            applyTheme(result.lamnaTheme || 'dynamic');
+            currentWcag = result.lamnaWcag || 'AA';
+            document.documentElement.style.setProperty('--lamna-zoom', result.lamnaZoom || 1.0);
         });
 
         chrome.storage.onChanged.addListener(function (changes, namespace) {
             if (changes.lamnaTheme) {
                 applyTheme(changes.lamnaTheme.newValue);
+            }
+            if (changes.lamnaWcag) {
+                currentWcag = changes.lamnaWcag.newValue;
+            }
+            if (changes.lamnaZoom) {
+                document.documentElement.style.setProperty('--lamna-zoom', changes.lamnaZoom.newValue);
             }
         });
     }
@@ -124,29 +209,25 @@
     let isActive = true;
     let lastMouseX = 0;
     let lastMouseY = 0;
+    let frozenOffsetX = 0;
+    let frozenOffsetY = 0;
+    let updateInterval = null;
 
-    // Toggle freeze on click when Ctrl is pressed
+    // Unfreeze if clicking away
     document.addEventListener('click', (e) => {
-        if (isCtrlPressed) {
-            e.preventDefault();
-            e.stopPropagation();
-            isFrozen = !isFrozen;
-            if (isFrozen) {
-                infoBox.classList.add('lamna-frozen');
-            } else {
-                infoBox.classList.remove('lamna-frozen');
-                if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
-            }
-        } else if (isFrozen && !infoBox.contains(e.target)) {
-            // Unfreeze if clicking away
+        if (isFrozen && !infoBox.contains(e.target)) {
             isFrozen = false;
             infoBox.classList.remove('lamna-frozen');
+            if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
         }
     }, true);
 
-    // Track Control key
+    // Keyboard events
     document.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'l' && e.ctrlKey && e.shiftKey) {
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) || document.activeElement.isContentEditable;
+
+        // Toggle Active
+        if (e.key.toLowerCase() === 'l' && e.altKey && !e.ctrlKey && !e.shiftKey) {
             isActive = !isActive;
             container.style.display = isActive ? 'block' : 'none';
             if (!isActive && hoveredElement) {
@@ -158,15 +239,46 @@
             return;
         }
 
+        // Toggle Freeze with 'F' key
+        if (e.key.toLowerCase() === 'f' && isActive && !isInput) {
+            e.preventDefault();
+            isFrozen = !isFrozen;
+            if (isFrozen) {
+                infoBox.classList.add('lamna-frozen');
+                if (hoveredElement) {
+                    const rect = hoveredElement.getBoundingClientRect();
+                    frozenOffsetX = lastMouseX - rect.left;
+                    frozenOffsetY = lastMouseY - rect.top;
+                }
+            } else {
+                infoBox.classList.remove('lamna-frozen');
+                if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
+            }
+            return;
+        }
+
         if (e.key === 'Control' && !isCtrlPressed) {
             isCtrlPressed = true;
             if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
+
+            // Poll for dynamic changes (like :hover, :active, transitions) while Ctrl is held
+            if (!updateInterval) {
+                updateInterval = setInterval(() => {
+                    if (hoveredElement && !isFrozen) {
+                        updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
+                    }
+                }, 100);
+            }
         }
     }, true);
 
     document.addEventListener('keyup', (e) => {
         if (e.key === 'Control' && isCtrlPressed) {
             isCtrlPressed = false;
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
             if (hoveredElement && !isFrozen) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
         }
     }, true);
@@ -290,48 +402,94 @@
 
         // Add advanced info if Ctrl is pressed
         if (isCtrlPressed) {
-            // Remove hover class to read original style computed values
+            // Remove hover class to read original style computed values accurately
             const hadHoverClass = target.classList.contains('lamna-hovered-element');
             if (hadHoverClass) target.classList.remove('lamna-hovered-element');
 
             const computed = window.getComputedStyle(target);
-            const bgColor = computed.backgroundColor; // Save background color while hover class is missing
+
+            // Capture these completely while the hover class is off!
+            const bgColor = computed.backgroundColor;
+            const txtColorStr = computed.color;
+            const effectiveBgColor = getEffectiveBackgroundColor(target);
+
             const hierarchy = getElementHierarchy(target);
 
+            // Positioning details if not static
+            const displayStr = computed.display;
+            const positionStr = computed.position;
+            const topStr = computed.top;
+            const rightStr = computed.right;
+            const bottomStr = computed.bottom;
+            const leftStr = computed.left;
+            const zIndexStr = computed.zIndex;
+            const marginStr = computed.margin;
+            const paddingStr = computed.padding;
+            const boxSizingStr = computed.boxSizing;
+            const fontSizeStr = computed.fontSize;
+            const fontFamilyStr = computed.fontFamily;
+            const opacityStr = computed.opacity;
+
+            // Reapply hover class after taking our snapshot
             if (hadHoverClass) target.classList.add('lamna-hovered-element');
 
             boxHTML += `<div class="lamna-advanced">`;
-            boxHTML += `<span class="lamna-advanced-title">Hierarquia:</span>`;
+            boxHTML += `<span class="lamna-advanced-title">Hierarchy:</span>`;
             boxHTML += `<span class="lamna-hierachy">${hierarchy}</span><br>`;
 
-            boxHTML += `<b>Display:</b> ${computed.display}<br>`;
-            boxHTML += `<b>Position:</b> ${computed.position}<br>`;
+            boxHTML += `<b>Display:</b> ${displayStr}<br>`;
+            boxHTML += `<b>Position:</b> ${positionStr}<br>`;
 
-            // Positioning details if not static
-            if (computed.position !== 'static') {
+            if (positionStr !== 'static') {
                 const positions = [];
-                if (computed.top !== 'auto') positions.push(`T:${computed.top}`);
-                if (computed.right !== 'auto') positions.push(`R:${computed.right}`);
-                if (computed.bottom !== 'auto') positions.push(`B:${computed.bottom}`);
-                if (computed.left !== 'auto') positions.push(`L:${computed.left}`);
+                if (topStr !== 'auto') positions.push(`T:${topStr}`);
+                if (rightStr !== 'auto') positions.push(`R:${rightStr}`);
+                if (bottomStr !== 'auto') positions.push(`B:${bottomStr}`);
+                if (leftStr !== 'auto') positions.push(`L:${leftStr}`);
                 if (positions.length > 0) boxHTML += `<b>Offset:</b> ${positions.join(' ')}<br>`;
-                boxHTML += `<b>Z-Index:</b> ${computed.zIndex}<br>`;
+                boxHTML += `<b>Z-Index:</b> ${zIndexStr}<br>`;
             }
 
             // Box Model
-            if (computed.margin !== '0px') boxHTML += `<b>Margin:</b> ${computed.margin}<br>`;
-            if (computed.padding !== '0px') boxHTML += `<b>Padding:</b> ${computed.padding}<br>`;
-            boxHTML += `<b>Box-Sizing:</b> ${computed.boxSizing}<br>`;
+            if (marginStr !== '0px') boxHTML += `<b>Margin:</b> ${marginStr}<br>`;
+            if (paddingStr !== '0px') boxHTML += `<b>Padding:</b> ${paddingStr}<br>`;
+            boxHTML += `<b>Box-Sizing:</b> ${boxSizingStr}<br>`;
 
             // Typography
-            boxHTML += `<b>Font:</b> ${computed.fontSize} ${computed.fontFamily.split(',')[0]}<br>`;
-            if (computed.color !== 'rgba(0, 0, 0, 0)') {
-                boxHTML += `<b>Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${computed.color};border:1px solid #000;border-radius:2px;"></span> ${computed.color}<br>`;
+            boxHTML += `<b>Font:</b> ${fontSizeStr} ${fontFamilyStr.split(',')[0]}<br>`;
+
+            // Contrast Details
+            if (txtColorStr !== 'rgba(0, 0, 0, 0)' && effectiveBgColor !== 'rgba(0, 0, 0, 0)') {
+                const tc = parseColor(txtColorStr);
+                const bc = parseColor(effectiveBgColor);
+                const ratio = getContrastRatio(tc, bc);
+
+                let requiredRatio = 4.5; // AA normal text
+                if (currentWcag === 'A') requiredRatio = 3.0;
+                else if (currentWcag === 'AAA') requiredRatio = 7.0;
+
+                const isPass = ratio >= requiredRatio;
+                const statusColor = isPass ? '#00ff00' : '#ff3333';
+                boxHTML += `<b>Contrast (${currentWcag}):</b> <span style="font-weight:bold;color:${statusColor}">${ratio.toFixed(2)}:1 (${isPass ? 'PASS' : 'FAIL'})</span><br>`;
+            }
+
+            if (txtColorStr !== 'rgba(0, 0, 0, 0)') {
+                boxHTML += `<b>Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${txtColorStr};border:1px solid #000;border-radius:2px;"></span> ${txtColorStr}<br>`;
             }
             if (bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
                 boxHTML += `<b>Bg-Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${bgColor};border:1px solid #000;border-radius:2px;"></span> ${bgColor}<br>`;
             }
-            if (computed.opacity !== '1') boxHTML += `<b>Opacity:</b> ${computed.opacity}<br>`;
+
+            // Append Hover specific CSS if found
+            const hoverStyles = getHoverStyles(target);
+            if (hoverStyles.hoverColor) {
+                boxHTML += `<b>Hover Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${hoverStyles.hoverColor};border:1px solid #000;border-radius:2px;"></span> ${hoverStyles.hoverColor}<br>`;
+            }
+            if (hoverStyles.hoverBg) {
+                boxHTML += `<b>Hover Bg:</b> <span style="display:inline-block;width:8px;height:8px;background:${hoverStyles.hoverBg};border:1px solid #000;border-radius:2px;"></span> ${hoverStyles.hoverBg}<br>`;
+            }
+
+            if (opacityStr !== '1') boxHTML += `<b>Opacity:</b> ${opacityStr}<br>`;
 
             boxHTML += `</div>`;
         }
@@ -356,6 +514,34 @@
         infoBox.style.left = `${left}px`;
         infoBox.style.top = `${top}px`;
     }
+
+    document.addEventListener('scroll', (e) => {
+        if (!isActive || !isFrozen || !hoveredElement) return;
+        // Reposition frozen box based on element's new screen bounds
+        const rect = hoveredElement.getBoundingClientRect();
+
+        // If element scrolled completely out of view, we could hide it or let it follow. Let's let it follow.
+        const targetX = rect.left + frozenOffsetX;
+        const targetY = rect.top + frozenOffsetY;
+
+        // Re-call positioning logic but without fully rebuilding HTML 
+        const infoBoxRect = infoBox.getBoundingClientRect();
+        let left = targetX + 20;
+        let top = targetY + 20;
+
+        if (left + infoBoxRect.width > window.innerWidth) {
+            left = targetX - infoBoxRect.width - 20;
+        }
+        if (top + infoBoxRect.height > window.innerHeight) {
+            top = targetY - infoBoxRect.height - 20;
+        }
+
+        if (left < 10) left = 10;
+        if (top < 10) top = 10;
+
+        infoBox.style.left = `${left}px`;
+        infoBox.style.top = `${top}px`;
+    }, true);
 
     document.addEventListener('mousemove', (e) => {
         if (!isActive || isFrozen) return;

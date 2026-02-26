@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Lamna Dev Analyzer",
     "version": "1.0",
-    "description": "Analisa o HTML da página em tempo real com sistema de temas e caixa de detalhes unificada.",
+    "description": "Analyzes the page HTML in real-time with a theme system and unified details box.",
     "action": {
         "default_popup": "popup.html"
     },
@@ -23,5 +23,15 @@
         "activeTab",
         "scripting",
         "storage"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "fonts/ShareTechMono.woff2"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
     ]
 }
