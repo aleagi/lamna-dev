@@ -2,10 +2,8 @@
     if (window.__lamna_injected) return;
     window.__lamna_injected = true;
 
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
+    // The external font loading was removed to prevent CSP side-effects on strict websites (like GitHub).
+    // The CSS already falls back gracefully to 'Courier New' or standard system monospace.
 
     const container = document.createElement('div');
     container.id = 'lamna-container';
