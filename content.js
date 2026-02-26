@@ -15,9 +15,9 @@
     function applyTheme(theme) {
         currentTheme = theme;
         if (theme === 'ambar') {
-            container.setAttribute('data-lamna-theme', 'ambar');
+            document.documentElement.setAttribute('data-lamna-theme', 'ambar');
         } else {
-            container.removeAttribute('data-lamna-theme');
+            document.documentElement.removeAttribute('data-lamna-theme');
         }
         drawRulers(); // Redraw canvas rulers with new colors if needed
     }

@@ -24,7 +24,7 @@
     --lamna-font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
 }
 
-[data-lamna-theme="ambar"] {
+:root[data-lamna-theme="ambar"] {
     /* Ambar LCD Theme */
     --lamna-bg: rgba(252, 163, 17, 0.85);
     /* Laranja LCD translúcido */
