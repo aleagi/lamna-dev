@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 200px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    h3 {
+      margin-top: 0;
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .theme-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+    label {
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h3>Escolha o Tema:</h3>
+  <div class="theme-option">
+    <input type="radio" id="neon" name="theme" value="neon">
+    <label for="neon">Neon Tech (Padrão)</label>
+  </div>
+  <div class="theme-option">
+    <input type="radio" id="ambar" name="theme" value="ambar">
+    <label for="ambar">LCD Âmbar (Clássico)</label>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

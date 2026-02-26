@@ -1,119 +1,167 @@
+:root {
+    /* Default/Neon Theme */
+    --lamna-bg: rgba(15, 25, 35, 0.6);
+    --lamna-backdrop: blur(10px);
+    --lamna-border: rgba(0, 255, 255, 0.2);
+    --lamna-box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+    --lamna-text-color: #e0e0e0;
+    --lamna-text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    --lamna-tag-color: #ff00ff;
+    --lamna-tag-shadow: 0 0 5px rgba(255, 0, 255, 0.6);
+    --lamna-class-color: #ffff00;
+    --lamna-class-shadow: 0 0 4px rgba(255, 255, 0, 0.5);
+    --lamna-dims-color: #00ff00;
+    --lamna-dims-shadow: 0 0 4px rgba(0, 255, 0, 0.5);
+    --lamna-ruler-color: rgba(0, 255, 255, 0.5);
+    --lamna-crosshair-color: rgba(0, 255, 255, 0.4);
+    --lamna-hover-outline: rgba(0, 255, 255, 0.6);
+    --lamna-hover-bg: rgba(0, 255, 255, 0.05);
+    --lamna-coords-bg: rgba(10, 20, 30, 0.4);
+    --lamna-coords-color: #0ff;
+}
+
+[data-lamna-theme="ambar"] {
+    /* Ambar LCD Theme */
+    --lamna-bg: #fc9505;
+    /* Fundo laranja/ambar bem vivo, tipo LCD retroiluminado */
+    --lamna-backdrop: none;
+    --lamna-border: #332000;
+    --lamna-box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(200, 100, 0, 0.5);
+    --lamna-text-color: #1a0f00;
+    /* Preto "LCD" */
+    --lamna-text-shadow: none;
+    --lamna-tag-color: #1a0f00;
+    --lamna-tag-shadow: none;
+    --lamna-class-color: #331f00;
+    --lamna-class-shadow: none;
+    --lamna-dims-color: #1a0f00;
+    --lamna-dims-shadow: none;
+    --lamna-ruler-color: rgba(252, 149, 5, 0.8);
+    --lamna-crosshair-color: rgba(252, 149, 5, 0.8);
+    --lamna-hover-outline: #fc9505;
+    --lamna-hover-bg: rgba(252, 149, 5, 0.1);
+    --lamna-coords-bg: rgba(26, 15, 0, 0.2);
+    --lamna-coords-color: #1a0f00;
+}
+
+/* Base UI wrapper */
+#lamna-container {
+    font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
+}
+
 /* Crosshairs */
-#lamna-crosshair-x, #lamna-crosshair-y {
-  position: fixed;
-  background-color: rgba(0, 255, 255, 0.4); /* Cyan/Neon */
-  pointer-events: none;
-  z-index: 999998;
+#lamna-crosshair-x,
+#lamna-crosshair-y {
+    position: fixed;
+    background-color: var(--lamna-crosshair-color);
+    pointer-events: none;
+    z-index: 999998;
 }
 
 #lamna-crosshair-x {
-  top: 0;
-  bottom: 0;
-  width: 1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
 }
 
 #lamna-crosshair-y {
-  left: 0;
-  right: 0;
-  height: 1px;
-}
-
-/* Tooltip for Coordinates near mouse */
-#lamna-coords-tooltip {
-  position: fixed;
-  padding: 4px 6px;
-  background: rgba(10, 20, 30, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: #0ff; /* Neon cyan */
-  font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
-  font-size: 10px;
-  font-weight: bold;
-  pointer-events: none;
-  z-index: 999999;
-  border-radius: 4px;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
-  margin-top: 15px; /* Offset from cursor */
-  margin-left: 15px;
+    left: 0;
+    right: 0;
+    height: 1px;
 }
 
 /* Glassmorphism Info box over elements */
 #lamna-info-box {
-  position: fixed;
-  padding: 10px 14px;
-  background: rgba(15, 25, 35, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
-  color: #e0e0e0;
-  font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
-  font-size: 11px;
-  pointer-events: none;
-  z-index: 999999;
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
-  transition: opacity 0.1s ease;
-  min-width: 150px;
+    position: fixed;
+    padding: 10px 14px;
+    background: var(--lamna-bg);
+    backdrop-filter: var(--lamna-backdrop);
+    -webkit-backdrop-filter: var(--lamna-backdrop);
+    border: 1px solid var(--lamna-border);
+    border-radius: 8px;
+    box-shadow: var(--lamna-box-shadow);
+    color: var(--lamna-text-color);
+    font-family: inherit;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 999999;
+    text-shadow: var(--lamna-text-shadow);
+    transition: opacity 0.1s ease;
+    min-width: 180px;
+}
+
+#lamna-info-box[data-theme="ambar"] {
+    border-radius: 2px;
+    padding: 8px 12px;
+}
+
+/* Coordinates inside Info Box */
+.lamna-coords {
+    background: var(--lamna-coords-bg);
+    color: var(--lamna-coords-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-weight: bold;
 }
 
 #lamna-info-box .lamna-tag {
-  color: #ff00ff; /* Neon pink/magenta for tags */
-  font-weight: bold;
-  font-size: 13px;
-  text-shadow: 0 0 5px rgba(255, 0, 255, 0.6);
+    color: var(--lamna-tag-color);
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: var(--lamna-tag-shadow);
 }
 
 #lamna-info-box .lamna-class {
-  color: #ffff00; /* Neon yellow for classes */
-  text-shadow: 0 0 4px rgba(255, 255, 0, 0.5);
-  display: block;
-  margin-top: 4px;
+    color: var(--lamna-class-color);
+    text-shadow: var(--lamna-class-shadow);
+    display: block;
+    margin-top: 4px;
 }
 
 #lamna-info-box .lamna-dims {
-  color: #00ff00; /* Neon green for dimensions */
-  text-shadow: 0 0 4px rgba(0, 255, 0, 0.5);
-  display: block;
-  margin-top: 6px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 4px;
+    color: var(--lamna-dims-color);
+    text-shadow: var(--lamna-dims-shadow);
+    display: block;
+    margin-top: 6px;
+    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    padding-top: 4px;
 }
 
 /* Highlight the hovered element */
 .lamna-hovered-element {
-  outline: 2px dashed rgba(0, 255, 255, 0.6) !important;
-  outline-offset: -2px !important;
-  background-color: rgba(0, 255, 255, 0.05) !important;
-  transition: outline 0.1s ease;
+    outline: 2px dashed var(--lamna-hover-outline) !important;
+    outline-offset: -2px !important;
+    background-color: var(--lamna-hover-bg) !important;
+    transition: outline 0.1s ease;
 }
 
 /* Fake ruler bars (Top and Left) */
-#lamna-ruler-top, #lamna-ruler-left {
-  position: fixed;
-  background: rgba(10, 20, 30, 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 999997;
-  pointer-events: none;
+#lamna-ruler-top,
+#lamna-ruler-left {
+    position: fixed;
+    background: rgba(10, 20, 30, 0.2);
+    z-index: 999997;
+    pointer-events: none;
 }
 
 /* Horizontal top ruler ticks */
 #lamna-ruler-top {
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-  background-image: repeating-linear-gradient(to right, transparent, transparent 99px, rgba(0, 255, 255, 0.5) 99px, rgba(0, 255, 255, 0.5) 100px);
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    border-bottom: 1px solid var(--lamna-ruler-color);
+    background-image: repeating-linear-gradient(to right, transparent, transparent 99px, var(--lamna-ruler-color) 99px, var(--lamna-ruler-color) 100px);
 }
 
 /* Vertical left ruler ticks */
 #lamna-ruler-left {
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 20px;
-  border-right: 1px solid rgba(0, 255, 255, 0.3);
-  background-image: repeating-linear-gradient(to bottom, transparent, transparent 99px, rgba(0, 255, 255, 0.5) 99px, rgba(0, 255, 255, 0.5) 100px);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 20px;
+    border-right: 1px solid var(--lamna-ruler-color);
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 99px, var(--lamna-ruler-color) 99px, var(--lamna-ruler-color) 100px);
 }
