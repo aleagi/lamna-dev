@@ -4,6 +4,7 @@
     --lamna-backdrop: blur(10px);
     --lamna-border: rgba(0, 255, 255, 0.2);
     --lamna-box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+    --lamna-bg-image: none;
     --lamna-text-color: #e0e0e0;
     --lamna-text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
     --lamna-tag-color: #ff00ff;
@@ -18,35 +19,42 @@
     --lamna-hover-bg: rgba(0, 255, 255, 0.05);
     --lamna-coords-bg: rgba(10, 20, 30, 0.4);
     --lamna-coords-color: #0ff;
+    --lamna-extra-text: #b0b0b0;
+    --lamna-font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
 }
 
 [data-lamna-theme="ambar"] {
     /* Ambar LCD Theme */
-    --lamna-bg: #fc9505;
-    /* Fundo laranja/ambar bem vivo, tipo LCD retroiluminado */
+    --lamna-bg: #fca311;
+    /* Laranja LCD */
     --lamna-backdrop: none;
-    --lamna-border: #332000;
-    --lamna-box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(200, 100, 0, 0.5);
-    --lamna-text-color: #1a0f00;
-    /* Preto "LCD" */
+    --lamna-border: #8c5a00;
+    /* Efeito de borda interna para simular o visor afundado no display */
+    --lamna-box-shadow: inset 0 0 15px rgba(140, 90, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.5);
+    /* Efeito de grade de pixels bem sutil (LCD matrix) */
+    --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(140, 90, 0, 0.1) 1px, rgba(140, 90, 0, 0.1) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(140, 90, 0, 0.1) 1px, rgba(140, 90, 0, 0.1) 2px);
+    --lamna-text-color: #2b1b00;
+    /* Preto "apagado" do LCD */
     --lamna-text-shadow: none;
-    --lamna-tag-color: #1a0f00;
+    --lamna-tag-color: #2b1b00;
     --lamna-tag-shadow: none;
-    --lamna-class-color: #331f00;
+    --lamna-class-color: #4a3000;
     --lamna-class-shadow: none;
-    --lamna-dims-color: #1a0f00;
+    --lamna-dims-color: #1a1000;
     --lamna-dims-shadow: none;
-    --lamna-ruler-color: rgba(252, 149, 5, 0.8);
-    --lamna-crosshair-color: rgba(252, 149, 5, 0.8);
-    --lamna-hover-outline: #fc9505;
-    --lamna-hover-bg: rgba(252, 149, 5, 0.1);
-    --lamna-coords-bg: rgba(26, 15, 0, 0.2);
-    --lamna-coords-color: #1a0f00;
+    --lamna-ruler-color: rgba(252, 163, 17, 0.9);
+    --lamna-crosshair-color: rgba(252, 163, 17, 0.8);
+    --lamna-hover-outline: #fca311;
+    --lamna-hover-bg: rgba(252, 163, 17, 0.15);
+    --lamna-coords-bg: rgba(140, 90, 0, 0.2);
+    --lamna-coords-color: #2b1b00;
+    --lamna-extra-text: #4a3000;
 }
 
 /* Base UI wrapper */
 #lamna-container {
-    font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
+    font-family: var(--lamna-font-family);
 }
 
 /* Crosshairs */
@@ -70,11 +78,12 @@
     height: 1px;
 }
 
-/* Glassmorphism Info box over elements */
+/* Glassmorphism / LCD Info box over elements */
 #lamna-info-box {
     position: fixed;
     padding: 10px 14px;
-    background: var(--lamna-bg);
+    background-color: var(--lamna-bg);
+    background-image: var(--lamna-bg-image);
     backdrop-filter: var(--lamna-backdrop);
     -webkit-backdrop-filter: var(--lamna-backdrop);
     border: 1px solid var(--lamna-border);
@@ -82,17 +91,18 @@
     box-shadow: var(--lamna-box-shadow);
     color: var(--lamna-text-color);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.4;
     pointer-events: none;
     z-index: 999999;
     text-shadow: var(--lamna-text-shadow);
     transition: opacity 0.1s ease;
-    min-width: 180px;
+    min-width: 200px;
 }
 
 #lamna-info-box[data-theme="ambar"] {
-    border-radius: 2px;
-    padding: 8px 12px;
+    border-radius: 0px;
+    border-width: 2px;
 }
 
 /* Coordinates inside Info Box */
@@ -100,7 +110,7 @@
     background: var(--lamna-coords-bg);
     color: var(--lamna-coords-color);
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 2px;
     display: inline-block;
     margin-bottom: 6px;
     font-weight: bold;
@@ -109,7 +119,7 @@
 #lamna-info-box .lamna-tag {
     color: var(--lamna-tag-color);
     font-weight: bold;
-    font-size: 14px;
+    font-size: 15px;
     text-shadow: var(--lamna-tag-shadow);
 }
 
@@ -117,7 +127,7 @@
     color: var(--lamna-class-color);
     text-shadow: var(--lamna-class-shadow);
     display: block;
-    margin-top: 4px;
+    font-size: 12px;
 }
 
 #lamna-info-box .lamna-dims {
@@ -125,8 +135,32 @@
     text-shadow: var(--lamna-dims-shadow);
     display: block;
     margin-top: 6px;
-    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    border-top: 1px dashed var(--lamna-border);
     padding-top: 4px;
+}
+
+/* Advanced Info */
+#lamna-info-box .lamna-advanced {
+    margin-top: 8px;
+    border-top: 1px dashed var(--lamna-border);
+    padding-top: 8px;
+    font-size: 11px;
+    color: var(--lamna-extra-text);
+}
+
+.lamna-advanced-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+    color: var(--lamna-text-color);
+}
+
+.lamna-hierachy {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    display: block;
 }
 
 /* Highlight the hovered element */
@@ -137,31 +171,30 @@
     transition: outline 0.1s ease;
 }
 
-/* Fake ruler bars (Top and Left) */
+/* Fake ruler bars using Canvases */
 #lamna-ruler-top,
 #lamna-ruler-left {
     position: fixed;
-    background: rgba(10, 20, 30, 0.2);
+    background: var(--lamna-coords-bg);
+    /* Semi-transparent background */
     z-index: 999997;
     pointer-events: none;
 }
 
-/* Horizontal top ruler ticks */
 #lamna-ruler-top {
     top: 0;
     left: 0;
     right: 0;
     height: 20px;
-    border-bottom: 1px solid var(--lamna-ruler-color);
-    background-image: repeating-linear-gradient(to right, transparent, transparent 99px, var(--lamna-ruler-color) 99px, var(--lamna-ruler-color) 100px);
+    width: 100vw;
+    border-bottom: 1px solid var(--lamna-border);
 }
 
-/* Vertical left ruler ticks */
 #lamna-ruler-left {
     top: 0;
     left: 0;
     bottom: 0;
     width: 20px;
-    border-right: 1px solid var(--lamna-ruler-color);
-    background-image: repeating-linear-gradient(to bottom, transparent, transparent 99px, var(--lamna-ruler-color) 99px, var(--lamna-ruler-color) 100px);
+    height: 100vh;
+    border-right: 1px solid var(--lamna-border);
 }
