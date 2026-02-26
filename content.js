@@ -299,13 +299,33 @@
 
             boxHTML += `<b>Display:</b> ${computed.display}<br>`;
             boxHTML += `<b>Position:</b> ${computed.position}<br>`;
+
+            // Positioning details if not static
+            if (computed.position !== 'static') {
+                const positions = [];
+                if (computed.top !== 'auto') positions.push(`T:${computed.top}`);
+                if (computed.right !== 'auto') positions.push(`R:${computed.right}`);
+                if (computed.bottom !== 'auto') positions.push(`B:${computed.bottom}`);
+                if (computed.left !== 'auto') positions.push(`L:${computed.left}`);
+                if (positions.length > 0) boxHTML += `<b>Offset:</b> ${positions.join(' ')}<br>`;
+                boxHTML += `<b>Z-Index:</b> ${computed.zIndex}<br>`;
+            }
+
+            // Box Model
             if (computed.margin !== '0px') boxHTML += `<b>Margin:</b> ${computed.margin}<br>`;
             if (computed.padding !== '0px') boxHTML += `<b>Padding:</b> ${computed.padding}<br>`;
+            boxHTML += `<b>Box-Sizing:</b> ${computed.boxSizing}<br>`;
+
+            // Typography
             boxHTML += `<b>Font:</b> ${computed.fontSize} ${computed.fontFamily.split(',')[0]}<br>`;
             if (computed.color !== 'rgba(0, 0, 0, 0)') {
-                // rough rgb to hex
                 boxHTML += `<b>Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${computed.color};border:1px solid #000;border-radius:2px;"></span> ${computed.color}<br>`;
             }
+            if (computed.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                boxHTML += `<b>Bg-Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${computed.backgroundColor};border:1px solid #000;border-radius:2px;"></span> ${computed.backgroundColor}<br>`;
+            }
+            if (computed.opacity !== '1') boxHTML += `<b>Opacity:</b> ${computed.opacity}<br>`;
+
             boxHTML += `</div>`;
         }
 
