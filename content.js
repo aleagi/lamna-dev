@@ -199,7 +199,7 @@
         ctxTop.clearRect(0, 0, w, 16);
         ctxTop.fillStyle = textColor;
         ctxTop.strokeStyle = color;
-        ctxTop.font = '8px "Share Tech Mono", monospace';
+        ctxTop.font = '10px "Share Tech Mono", monospace';
         ctxTop.textAlign = 'center';
         ctxTop.textBaseline = 'top';
         ctxTop.beginPath();
@@ -223,7 +223,7 @@
         ctxLeft.clearRect(0, 0, 16, h);
         ctxLeft.fillStyle = textColor;
         ctxLeft.strokeStyle = color;
-        ctxLeft.font = '8px "Share Tech Mono", monospace';
+        ctxLeft.font = '10px "Share Tech Mono", monospace';
         ctxLeft.textAlign = 'right';
         ctxLeft.textBaseline = 'middle';
         ctxLeft.beginPath();

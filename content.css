@@ -116,7 +116,7 @@
     box-shadow: var(--lamna-box-shadow);
     color: var(--lamna-text-color);
     font-family: inherit;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.2;
     pointer-events: none;
     z-index: 999999;
@@ -141,13 +141,13 @@
     display: inline-block;
     margin-bottom: 2px;
     font-weight: bold;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 #lamna-info-box .lamna-tag {
     color: var(--lamna-tag-color);
     font-weight: bold;
-    font-size: 11px;
+    font-size: 13px;
     text-shadow: var(--lamna-tag-shadow);
 }
 
@@ -155,7 +155,7 @@
     color: var(--lamna-class-color);
     text-shadow: var(--lamna-class-shadow);
     display: block;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #lamna-info-box .lamna-dims {
@@ -172,7 +172,7 @@
     margin-top: 4px;
     border-top: 1px dashed var(--lamna-separator);
     padding-top: 4px;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--lamna-extra-text);
     max-width: 200px;
 }
