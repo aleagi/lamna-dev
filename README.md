@@ -16,7 +16,7 @@
   - Positioning (Top, Left, Right, Bottom, and Z-Index)
   - Real and Visual Colors (Text Color, Background Color, Opacity, and literal RGB rendering with a visualized palette)
   - Typography (Font family and computed sizes).
-- **Inspection Freeze (Hit `F`):** Need to copy the class of an inspected element? Just by pressing the `F` key while pointing at the element, the box will be locked on the screen (Freeze mode), allowing you to use the mouse to select text inside the *Info box*. Press `F` again (or click outside) to unfreeze.
+- **Inspection Freeze (Hit `L`):** Need to copy the class of an inspected element? Just by pressing the `L` key while pointing at the element, the box will be locked on the screen (Freeze mode), allowing you to use the mouse to select text inside the *Info box*. Press `L` again (or click outside) to unfreeze.
 - **Automatic Contrast Analysis (WCAG):** When in Detective Mode (holding `Ctrl`), the extension calculates the contrast ratio (Luminance ratio) between the text color and the actual background color rendered on the element. It approves or fails accessibility based on the requirement level (A, AA, or AAA) set in the extension panel.
 - **Adjustable Zoom:** Through the extension button in the browser (Popup), you can freely change the scale/zoom of the display box (between 0.5x and 2.0x).
 
@@ -26,7 +26,7 @@
 | --- | --- | --- |
 | `Alt + L` | **Toggle Display** | Quickly hides all lines, rulers, and boxes of the extension without needing to uninstall or disable it in the store, returning to normal interaction with the page. |
 | `Hold Ctrl` | **Advanced Information** | Expands the Info Box with extended data (Parent Nodes, Hierarchy, and Computed Styles) useful for designers and CSS. |
-| `F Key` | **Freeze Screen** | Freezes the current state of the tooltip. This allows you to freely move the mouse and **select texts** that appear in the component tooltip. Press `F` again (or click outside) to unfreeze. |
+| `L Key` | **Freeze Screen** | Freezes the current state of the tooltip. This allows you to freely move the mouse and **select texts** that appear in the component tooltip. Press `L` again (or click outside) to unfreeze. |
 
 ## 📦 How to install
 

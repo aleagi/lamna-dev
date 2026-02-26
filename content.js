@@ -19,6 +19,7 @@
 
     let currentTheme = 'dynamic'; // Default to start
     let currentWcag = 'AA'; // Default WCAG level
+    let isActive = true; // Is the extension HUD toggled on?
 
     function getBrightness(r, g, b) {
         return (r * 299 + g * 587 + b * 114) / 1000;
@@ -96,6 +97,31 @@
         return { hoverBg, hoverColor };
     }
 
+    function getBaseStyleColors(el) {
+        let bgColor = 'rgba(0, 0, 0, 0)';
+        let colorStr = 'rgb(0, 0, 0)';
+        if (!el.parentNode) return { bgColor, colorStr };
+
+        const clone = el.cloneNode(false);
+        clone.classList.remove('lamna-hovered-element');
+        clone.style.setProperty('transition', 'none', 'important');
+        clone.style.setProperty('animation', 'none', 'important');
+        clone.style.setProperty('position', 'absolute', 'important');
+        clone.style.setProperty('visibility', 'hidden', 'important');
+        clone.style.setProperty('pointer-events', 'none', 'important');
+        clone.style.setProperty('z-index', '-999999', 'important');
+
+        try {
+            el.parentNode.insertBefore(clone, el);
+            const comp = window.getComputedStyle(clone);
+            bgColor = comp.backgroundColor;
+            colorStr = comp.color;
+            el.parentNode.removeChild(clone);
+        } catch (e) { }
+
+        return { bgColor, colorStr };
+    }
+
     function getContrastRatio(color1, color2) {
         const lum1 = getLuminance(color1.r, color1.g, color1.b);
         const lum2 = getLuminance(color2.r, color2.g, color2.b);
@@ -161,10 +187,14 @@
     }
 
     if (chrome && chrome.storage && chrome.storage.sync) {
-        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom'], function (result) {
+        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom', 'lamnaActive'], function (result) {
             applyTheme(result.lamnaTheme || 'dynamic');
             currentWcag = result.lamnaWcag || 'AA';
             document.documentElement.style.setProperty('--lamna-zoom', result.lamnaZoom || 1.0);
+            if (result.lamnaActive !== undefined) {
+                isActive = result.lamnaActive;
+                container.style.display = isActive ? 'block' : 'none';
+            }
         });
 
         chrome.storage.onChanged.addListener(function (changes, namespace) {
@@ -176,6 +206,14 @@
             }
             if (changes.lamnaZoom) {
                 document.documentElement.style.setProperty('--lamna-zoom', changes.lamnaZoom.newValue);
+            }
+            if (changes.lamnaActive) {
+                isActive = changes.lamnaActive.newValue;
+                container.style.display = isActive ? 'block' : 'none';
+                if (!isActive) {
+                    isFrozen = false;
+                    infoBox.classList.remove('lamna-frozen');
+                }
             }
         });
     }
@@ -206,7 +244,6 @@
     let hoveredElement = null;
     let isCtrlPressed = false;
     let isFrozen = false;
-    let isActive = true;
     let lastMouseX = 0;
     let lastMouseY = 0;
     let frozenOffsetX = 0;
@@ -230,6 +267,7 @@
         if (e.key.toLowerCase() === 'l' && e.altKey && !e.ctrlKey && !e.shiftKey) {
             isActive = !isActive;
             container.style.display = isActive ? 'block' : 'none';
+            chrome.storage.sync.set({ lamnaActive: isActive });
             if (!isActive && hoveredElement) {
                 hoveredElement.classList.remove('lamna-hovered-element');
                 hoveredElement = null;
@@ -239,8 +277,8 @@
             return;
         }
 
-        // Toggle Freeze with 'F' key
-        if (e.key.toLowerCase() === 'f' && isActive && !isInput) {
+        // Toggle Freeze with 'L' key
+        if (e.key.toLowerCase() === 'l' && isActive && !isInput && !e.altKey && !e.ctrlKey && !e.shiftKey) {
             e.preventDefault();
             isFrozen = !isFrozen;
             if (isFrozen) {
@@ -412,6 +450,7 @@
             const bgColor = computed.backgroundColor;
             const txtColorStr = computed.color;
             const effectiveBgColor = getEffectiveBackgroundColor(target);
+            const baseStyles = getBaseStyleColors(target);
 
             const hierarchy = getElementHierarchy(target);
 
@@ -474,11 +513,21 @@
             }
 
             if (txtColorStr !== 'rgba(0, 0, 0, 0)') {
-                boxHTML += `<b>Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${txtColorStr};border:1px solid #000;border-radius:2px;"></span> ${txtColorStr}<br>`;
+                boxHTML += `<b>Color (Current):</b> <span style="display:inline-block;width:8px;height:8px;background:${txtColorStr};border:1px solid #000;border-radius:2px;"></span> ${txtColorStr}<br>`;
             }
             if (bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-                boxHTML += `<b>Bg-Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${bgColor};border:1px solid #000;border-radius:2px;"></span> ${bgColor}<br>`;
+                boxHTML += `<b>Bg-Color (Current):</b> <span style="display:inline-block;width:8px;height:8px;background:${bgColor};border:1px solid #000;border-radius:2px;"></span> ${bgColor}<br>`;
             }
+
+            // Show base styles if they differ from current (e.g., if currently hovered)
+            if (baseStyles.colorStr !== 'rgba(0, 0, 0, 0)' && baseStyles.colorStr !== txtColorStr) {
+                boxHTML += `<b>Color (Base):</b> <span style="display:inline-block;width:8px;height:8px;background:${baseStyles.colorStr};border:1px solid #000;border-radius:2px;"></span> ${baseStyles.colorStr}<br>`;
+            }
+            if (baseStyles.bgColor !== 'rgba(0, 0, 0, 0)' && baseStyles.bgColor !== 'transparent' && baseStyles.bgColor !== bgColor) {
+                boxHTML += `<b>Bg-Color (Base):</b> <span style="display:inline-block;width:8px;height:8px;background:${baseStyles.bgColor};border:1px solid #000;border-radius:2px;"></span> ${baseStyles.bgColor}<br>`;
+            }
+
+
 
             // Append Hover specific CSS if found
             const hoverStyles = getHoverStyles(target);
