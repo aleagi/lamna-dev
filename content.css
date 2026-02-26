@@ -1,9 +1,9 @@
 :root {
     /* Default/Neon Theme */
-    --lamna-bg: rgba(15, 25, 35, 0.6);
+    --lamna-bg: rgba(15, 25, 35, 0.85);
     --lamna-backdrop: blur(10px);
-    --lamna-border: rgba(0, 255, 255, 0.2);
-    --lamna-box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+    --lamna-border: none;
+    --lamna-box-shadow: none;
     --lamna-bg-image: none;
     --lamna-text-color: #e0e0e0;
     --lamna-text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
@@ -15,27 +15,25 @@
     --lamna-dims-shadow: 0 0 4px rgba(0, 255, 0, 0.5);
     --lamna-ruler-color: rgba(0, 255, 255, 0.5);
     --lamna-crosshair-color: rgba(0, 255, 255, 0.4);
-    --lamna-hover-outline: rgba(0, 255, 255, 0.6);
-    --lamna-hover-bg: rgba(0, 255, 255, 0.05);
+    --lamna-hover-outline: rgba(0, 255, 255, 0.8);
+    --lamna-hover-bg: rgba(0, 255, 255, 0.1);
     --lamna-coords-bg: rgba(10, 20, 30, 0.4);
     --lamna-coords-color: #0ff;
     --lamna-extra-text: #b0b0b0;
+    --lamna-separator: rgba(255, 255, 255, 0.2);
     --lamna-font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
 }
 
 [data-lamna-theme="ambar"] {
     /* Ambar LCD Theme */
-    --lamna-bg: #fca311;
-    /* Laranja LCD */
+    --lamna-bg: rgba(252, 163, 17, 0.85);
+    /* Laranja LCD translúcido */
     --lamna-backdrop: none;
-    --lamna-border: #8c5a00;
-    /* Efeito de borda interna para simular o visor afundado no display */
-    --lamna-box-shadow: inset 0 0 15px rgba(140, 90, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.5);
-    /* Efeito de grade de pixels bem sutil (LCD matrix) */
-    --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(140, 90, 0, 0.1) 1px, rgba(140, 90, 0, 0.1) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(140, 90, 0, 0.1) 1px, rgba(140, 90, 0, 0.1) 2px);
+    --lamna-border: none;
+    --lamna-box-shadow: none;
+    --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(140, 90, 0, 0.05) 1px, rgba(140, 90, 0, 0.05) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(140, 90, 0, 0.05) 1px, rgba(140, 90, 0, 0.05) 2px);
     --lamna-text-color: #2b1b00;
-    /* Preto "apagado" do LCD */
     --lamna-text-shadow: none;
     --lamna-tag-color: #2b1b00;
     --lamna-tag-shadow: none;
@@ -45,11 +43,12 @@
     --lamna-dims-shadow: none;
     --lamna-ruler-color: rgba(252, 163, 17, 0.9);
     --lamna-crosshair-color: rgba(252, 163, 17, 0.8);
-    --lamna-hover-outline: #fca311;
-    --lamna-hover-bg: rgba(252, 163, 17, 0.15);
+    --lamna-hover-outline: rgba(252, 163, 17, 0.9);
+    --lamna-hover-bg: rgba(252, 163, 17, 0.2);
     --lamna-coords-bg: rgba(140, 90, 0, 0.2);
     --lamna-coords-color: #2b1b00;
     --lamna-extra-text: #4a3000;
+    --lamna-separator: rgba(140, 90, 0, 0.3);
 }
 
 /* Base UI wrapper */
@@ -78,48 +77,46 @@
     height: 1px;
 }
 
-/* Glassmorphism / LCD Info box over elements */
+/* Minimalist Info box over elements */
 #lamna-info-box {
     position: fixed;
-    padding: 10px 14px;
+    padding: 6px 10px;
     background-color: var(--lamna-bg);
     background-image: var(--lamna-bg-image);
     backdrop-filter: var(--lamna-backdrop);
     -webkit-backdrop-filter: var(--lamna-backdrop);
-    border: 1px solid var(--lamna-border);
-    border-radius: 8px;
+    border: var(--lamna-border);
+    border-radius: 4px;
+    /* sutil e minimalista */
     box-shadow: var(--lamna-box-shadow);
     color: var(--lamna-text-color);
     font-family: inherit;
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 12px;
+    line-height: 1.3;
     pointer-events: none;
     z-index: 999999;
     text-shadow: var(--lamna-text-shadow);
     transition: opacity 0.1s ease;
-    min-width: 200px;
-}
-
-#lamna-info-box[data-theme="ambar"] {
-    border-radius: 0px;
-    border-width: 2px;
+    min-width: unset;
+    /* removed wide min-width to keep it compact */
 }
 
 /* Coordinates inside Info Box */
 .lamna-coords {
     background: var(--lamna-coords-bg);
     color: var(--lamna-coords-color);
-    padding: 2px 6px;
+    padding: 1px 4px;
     border-radius: 2px;
     display: inline-block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-weight: bold;
+    font-size: 11px;
 }
 
 #lamna-info-box .lamna-tag {
     color: var(--lamna-tag-color);
     font-weight: bold;
-    font-size: 15px;
+    font-size: 13px;
     text-shadow: var(--lamna-tag-shadow);
 }
 
@@ -127,25 +124,26 @@
     color: var(--lamna-class-color);
     text-shadow: var(--lamna-class-shadow);
     display: block;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 #lamna-info-box .lamna-dims {
     color: var(--lamna-dims-color);
     text-shadow: var(--lamna-dims-shadow);
     display: block;
-    margin-top: 6px;
-    border-top: 1px dashed var(--lamna-border);
+    margin-top: 4px;
+    border-top: 1px dashed var(--lamna-separator);
     padding-top: 4px;
 }
 
 /* Advanced Info */
 #lamna-info-box .lamna-advanced {
-    margin-top: 8px;
-    border-top: 1px dashed var(--lamna-border);
-    padding-top: 8px;
+    margin-top: 6px;
+    border-top: 1px dashed var(--lamna-separator);
+    padding-top: 6px;
     font-size: 11px;
     color: var(--lamna-extra-text);
+    max-width: 250px;
 }
 
 .lamna-advanced-title {
@@ -156,11 +154,10 @@
 }
 
 .lamna-hierachy {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 300px;
+    white-space: normal;
+    word-wrap: break-word;
     display: block;
+    margin-bottom: 4px;
 }
 
 /* Highlight the hovered element */
@@ -176,7 +173,6 @@
 #lamna-ruler-left {
     position: fixed;
     background: var(--lamna-coords-bg);
-    /* Semi-transparent background */
     z-index: 999997;
     pointer-events: none;
 }
@@ -187,7 +183,7 @@
     right: 0;
     height: 20px;
     width: 100vw;
-    border-bottom: 1px solid var(--lamna-border);
+    border-bottom: 1px solid var(--lamna-separator);
 }
 
 #lamna-ruler-left {
@@ -196,5 +192,5 @@
     bottom: 0;
     width: 20px;
     height: 100vh;
-    border-right: 1px solid var(--lamna-border);
+    border-right: 1px solid var(--lamna-separator);
 }
