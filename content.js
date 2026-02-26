@@ -290,8 +290,15 @@
 
         // Add advanced info if Ctrl is pressed
         if (isCtrlPressed) {
+            // Remove hover class to read original style computed values
+            const hadHoverClass = target.classList.contains('lamna-hovered-element');
+            if (hadHoverClass) target.classList.remove('lamna-hovered-element');
+
             const computed = window.getComputedStyle(target);
+            const bgColor = computed.backgroundColor; // Save background color while hover class is missing
             const hierarchy = getElementHierarchy(target);
+
+            if (hadHoverClass) target.classList.add('lamna-hovered-element');
 
             boxHTML += `<div class="lamna-advanced">`;
             boxHTML += `<span class="lamna-advanced-title">Hierarquia:</span>`;
@@ -321,8 +328,8 @@
             if (computed.color !== 'rgba(0, 0, 0, 0)') {
                 boxHTML += `<b>Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${computed.color};border:1px solid #000;border-radius:2px;"></span> ${computed.color}<br>`;
             }
-            if (computed.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                boxHTML += `<b>Bg-Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${computed.backgroundColor};border:1px solid #000;border-radius:2px;"></span> ${computed.backgroundColor}<br>`;
+            if (bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                boxHTML += `<b>Bg-Color:</b> <span style="display:inline-block;width:8px;height:8px;background:${bgColor};border:1px solid #000;border-radius:2px;"></span> ${bgColor}<br>`;
             }
             if (computed.opacity !== '1') boxHTML += `<b>Opacity:</b> ${computed.opacity}<br>`;
 
