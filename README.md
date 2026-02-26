@@ -11,7 +11,11 @@
   - **LCD Âmbar:** Para uso old-school. Bordas apagadas, pixels na tela simulando uma placa Matrix LCD verdadeira (Theme Ambar).
   - **The Matrix:** Um tema "hacker" verde-escuro diretamente extraído de displays de terminais.
   - **Dinâmico (Auto):** A extensão detecta inteligentemente a cor dominante ou theme-color do site em que você está navegando e calcula o contraste das fontes automaticamente, gerando um esquema de cores próprio!
-- **Modo Detetive (Hold `Ctrl`):** Revela a hierarquia completa e atributos ocultos de estilizacao de maneira instantânea (Paddings, Margins, Cores reais visuais, Display, Fontes e Posição).
+- **Modo Detetive (Hold `Ctrl`):** Revela a hierarquia completa e atributos ocultos de estilização de maneira instantânea, como:
+  - Espaçamentos (Paddings, Margins e Box-Sizing)
+  - Posicionamentos (Top, Left, Right, Bottom e Z-Index)
+  - Cores Reais e Visuais (Text Color, Background Color, Opacidade e renderizacao RGB literal com paleta vizualizada)
+  - Tipografia (Família de fontes e tamanhos computados).
 - **Congelamento de Inspeção (Hold `Ctrl` + `Click`):** Precisa copiar a classe de um elemento inspecionado? Ao clicar no elemento segurando o Control, a caixa ficará travada na tela (Freeze mode), te permitindo usar o mouse para selecionar os textos dentro da *Info box*. Clique novamente para descongelar.
 
 ## ⌨️ Atalhos Essenciais
@@ -31,5 +35,13 @@ Como a extensão ainda está em desenvolvimento:
 4. Selecione a pasta onde clonou este projeto. Pronto! A extensão estará disponível em todos os sites que visitar.
 
 ---
+
+## 🔮 Roadmap / Ideias Futuras
+Queremos tornar o Lamna Dev Analyzer ainda mais indispensável no dia a dia. Aqui estão algumas ideias sendo avaliadas para implementação:
+1. **Analisa de Contraste Automático:** Inspecionar o nível de acessibilidade (WCAG) entre as cores da fonte e do fundo do elemento selecionado para identificar textos ilegíveis.
+2. **Editor "Inline" Instantâneo:** Possibilidade de dar _dois cliques_ na área congelada da caixa de infos para alterar um padding ou cor e ver a mudança aplicada diretamente na renderização do site.
+3. **Capture Mode (Imagens):** Botão/atalho no popup congelado para extrair/baixar perfeitamente apenas a div congelada para uma imagem PNG (como se fosse um recorte cirúrgico guiado pela engine de DOM).
+4. **Wireframe Mode:** Um botão/atalho que desenha instantaneamente bordas transparentes em volta de absolutamente todas as divs dentro de um container selecionado exibindo a malha do site.
+5. **Color-Picker embutido:** Uma "pipeta" (Eyedropper) ou tecla rápida pra copiar o código HEX de onde seu mouse passou, baseada no CSS lido (não num bitmap).
 
 > Desenvolvido com muito café e precisão de layout. Em constante experimentação estética! 🧡
