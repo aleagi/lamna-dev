@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Lamna Dev Analyzer",
+  "version": "1.0",
+  "description": "Analisa o HTML da página em tempo real, mostra réguas e detalhes do elemento ao passar o mouse.",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ]
+}
