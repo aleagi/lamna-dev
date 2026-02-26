@@ -27,7 +27,6 @@
 :root[data-lamna-theme="ambar"] {
     /* Ambar LCD Theme */
     --lamna-bg: rgba(252, 163, 17, 0.85);
-    /* Laranja LCD translúcido */
     --lamna-backdrop: none;
     --lamna-border: none;
     --lamna-box-shadow: none;
@@ -49,6 +48,33 @@
     --lamna-coords-color: #2b1b00;
     --lamna-extra-text: #4a3000;
     --lamna-separator: rgba(140, 90, 0, 0.3);
+}
+
+:root[data-lamna-theme="matrix"] {
+    /* The Matrix Theme */
+    --lamna-bg: rgba(0, 15, 0, 0.85);
+    --lamna-backdrop: none;
+    --lamna-border: none;
+    --lamna-box-shadow: none;
+    --lamna-bg-image: none;
+    --lamna-text-color: #008F11;
+    /* Matrix dark green */
+    --lamna-text-shadow: 0 0 2px rgba(0, 255, 65, 0.4);
+    --lamna-tag-color: #00FF41;
+    /* bright matrix green */
+    --lamna-tag-shadow: 0 0 3px rgba(0, 255, 65, 0.6);
+    --lamna-class-color: #008F11;
+    --lamna-class-shadow: none;
+    --lamna-dims-color: #00FF41;
+    --lamna-dims-shadow: none;
+    --lamna-ruler-color: rgba(0, 255, 65, 0.6);
+    --lamna-crosshair-color: rgba(0, 255, 65, 0.5);
+    --lamna-hover-outline: rgba(0, 255, 65, 0.8);
+    --lamna-hover-bg: rgba(0, 255, 65, 0.1);
+    --lamna-coords-bg: rgba(0, 15, 0, 0.5);
+    --lamna-coords-color: #00FF41;
+    --lamna-extra-text: #008F11;
+    --lamna-separator: rgba(0, 255, 65, 0.3);
 }
 
 /* Base UI wrapper */
@@ -80,43 +106,48 @@
 /* Minimalist Info box over elements */
 #lamna-info-box {
     position: fixed;
-    padding: 6px 10px;
+    padding: 4px 6px;
     background-color: var(--lamna-bg);
     background-image: var(--lamna-bg-image);
     backdrop-filter: var(--lamna-backdrop);
     -webkit-backdrop-filter: var(--lamna-backdrop);
     border: var(--lamna-border);
-    border-radius: 4px;
-    /* sutil e minimalista */
+    border-radius: 2px;
     box-shadow: var(--lamna-box-shadow);
     color: var(--lamna-text-color);
     font-family: inherit;
-    font-size: 12px;
-    line-height: 1.3;
+    font-size: 10px;
+    line-height: 1.2;
     pointer-events: none;
     z-index: 999999;
     text-shadow: var(--lamna-text-shadow);
     transition: opacity 0.1s ease;
     min-width: unset;
-    /* removed wide min-width to keep it compact */
+}
+
+#lamna-info-box.lamna-frozen {
+    pointer-events: auto;
+    /* Allow text selection */
+    user-select: text;
+    border: 1px dashed var(--lamna-text-color);
 }
 
 /* Coordinates inside Info Box */
 .lamna-coords {
     background: var(--lamna-coords-bg);
     color: var(--lamna-coords-color);
-    padding: 1px 4px;
+    padding: 1px 3px;
     border-radius: 2px;
     display: inline-block;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 #lamna-info-box .lamna-tag {
     color: var(--lamna-tag-color);
     font-weight: bold;
-    font-size: 13px;
+    font-size: 11px;
     text-shadow: var(--lamna-tag-shadow);
 }
 
@@ -124,26 +155,26 @@
     color: var(--lamna-class-color);
     text-shadow: var(--lamna-class-shadow);
     display: block;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 #lamna-info-box .lamna-dims {
     color: var(--lamna-dims-color);
     text-shadow: var(--lamna-dims-shadow);
     display: block;
-    margin-top: 4px;
+    margin-top: 2px;
     border-top: 1px dashed var(--lamna-separator);
-    padding-top: 4px;
+    padding-top: 2px;
 }
 
 /* Advanced Info */
 #lamna-info-box .lamna-advanced {
-    margin-top: 6px;
+    margin-top: 4px;
     border-top: 1px dashed var(--lamna-separator);
-    padding-top: 6px;
-    font-size: 11px;
+    padding-top: 4px;
+    font-size: 10px;
     color: var(--lamna-extra-text);
-    max-width: 250px;
+    max-width: 200px;
 }
 
 .lamna-advanced-title {
@@ -157,7 +188,7 @@
     white-space: normal;
     word-wrap: break-word;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 /* Highlight the hovered element */
@@ -181,7 +212,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 20px;
+    height: 16px;
     width: 100vw;
     border-bottom: 1px solid var(--lamna-separator);
 }
@@ -190,7 +221,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 20px;
+    width: 16px;
     height: 100vh;
     border-right: 1px solid var(--lamna-separator);
 }

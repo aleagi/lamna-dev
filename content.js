@@ -12,10 +12,73 @@
 
     let currentTheme = 'neon'; // Default to start
 
+    function getBrightness(r, g, b) {
+        return (r * 299 + g * 587 + b * 114) / 1000;
+    }
+
+    function parseColor(colorStr) {
+        const div = document.createElement('div');
+        div.style.color = colorStr;
+        document.body.appendChild(div);
+        const style = window.getComputedStyle(div).color;
+        document.body.removeChild(div);
+        const match = style.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+            return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+        }
+        return { r: 0, g: 0, b: 0 };
+    }
+
     function applyTheme(theme) {
         currentTheme = theme;
-        if (theme === 'ambar') {
-            document.documentElement.setAttribute('data-lamna-theme', 'ambar');
+
+        // Cleanup inline styles from dynamic theme
+        const rootVars = ['--lamna-bg', '--lamna-text-color', '--lamna-tag-color', '--lamna-class-color', '--lamna-dims-color', '--lamna-ruler-color', '--lamna-crosshair-color', '--lamna-hover-outline', '--lamna-hover-bg', '--lamna-coords-bg', '--lamna-coords-color', '--lamna-separator', '--lamna-extra-text'];
+        rootVars.forEach(v => document.documentElement.style.removeProperty(v));
+
+        if (theme === 'ambar' || theme === 'matrix') {
+            document.documentElement.setAttribute('data-lamna-theme', theme);
+        } else if (theme === 'dynamic') {
+            document.documentElement.removeAttribute('data-lamna-theme');
+
+            // Try to find a theme color
+            let baseColorStr = null;
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme && metaTheme.content) {
+                baseColorStr = metaTheme.content;
+            } else {
+                const nav = document.querySelector('nav, header');
+                baseColorStr = window.getComputedStyle(nav || document.body).backgroundColor;
+                if (baseColorStr === 'rgba(0, 0, 0, 0)' || baseColorStr === 'transparent') {
+                    baseColorStr = '#3b82f6'; // fallback blue
+                }
+            }
+
+            const baseColor = parseColor(baseColorStr);
+            const brightness = getBrightness(baseColor.r, baseColor.g, baseColor.b);
+            const isDarkBg = brightness < 128;
+
+            // Generate palette
+            const primary = `${baseColor.r}, ${baseColor.g}, ${baseColor.b}`;
+            const secondary = isDarkBg ? '255, 255, 255' : '15, 25, 35';
+            const highlight = isDarkBg ? '255, 255, 0' : '0, 0, 255';
+
+            // Apply variables directly to root style
+            const style = document.documentElement.style;
+            style.setProperty('--lamna-bg', `rgba(${primary}, 0.9)`);
+            style.setProperty('--lamna-text-color', `rgb(${secondary})`);
+            style.setProperty('--lamna-tag-color', `rgb(${secondary})`);
+            style.setProperty('--lamna-class-color', `rgba(${secondary}, 0.8)`);
+            style.setProperty('--lamna-dims-color', `rgb(${highlight})`);
+            style.setProperty('--lamna-ruler-color', `rgba(${primary}, 0.8)`);
+            style.setProperty('--lamna-crosshair-color', `rgba(${primary}, 0.6)`);
+            style.setProperty('--lamna-hover-outline', `rgb(${primary})`);
+            style.setProperty('--lamna-hover-bg', `rgba(${primary}, 0.1)`);
+            style.setProperty('--lamna-coords-bg', `rgba(${secondary}, 0.8)`);
+            style.setProperty('--lamna-coords-color', `rgb(${primary})`);
+            style.setProperty('--lamna-separator', `rgba(${secondary}, 0.2)`);
+            style.setProperty('--lamna-extra-text', `rgba(${secondary}, 0.9)`);
+
         } else {
             document.documentElement.removeAttribute('data-lamna-theme');
         }
@@ -59,11 +122,44 @@
 
     let hoveredElement = null;
     let isCtrlPressed = false;
+    let isFrozen = false;
+    let isActive = true;
     let lastMouseX = 0;
     let lastMouseY = 0;
 
+    // Toggle freeze on click when Ctrl is pressed
+    document.addEventListener('click', (e) => {
+        if (isCtrlPressed) {
+            e.preventDefault();
+            e.stopPropagation();
+            isFrozen = !isFrozen;
+            if (isFrozen) {
+                infoBox.classList.add('lamna-frozen');
+            } else {
+                infoBox.classList.remove('lamna-frozen');
+                if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
+            }
+        } else if (isFrozen && !infoBox.contains(e.target)) {
+            // Unfreeze if clicking away
+            isFrozen = false;
+            infoBox.classList.remove('lamna-frozen');
+        }
+    }, true);
+
     // Track Control key
     document.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'l' && e.ctrlKey && e.shiftKey) {
+            isActive = !isActive;
+            container.style.display = isActive ? 'block' : 'none';
+            if (!isActive && hoveredElement) {
+                hoveredElement.classList.remove('lamna-hovered-element');
+                hoveredElement = null;
+                isFrozen = false;
+                infoBox.classList.remove('lamna-frozen');
+            }
+            return;
+        }
+
         if (e.key === 'Control' && !isCtrlPressed) {
             isCtrlPressed = true;
             if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
@@ -73,7 +169,7 @@
     document.addEventListener('keyup', (e) => {
         if (e.key === 'Control' && isCtrlPressed) {
             isCtrlPressed = false;
-            if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
+            if (hoveredElement && !isFrozen) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
         }
     }, true);
 
@@ -84,8 +180,8 @@
         const h = window.innerHeight;
 
         rulerTop.width = w * dpr;
-        rulerTop.height = 20 * dpr;
-        rulerLeft.width = 20 * dpr;
+        rulerTop.height = 16 * dpr;
+        rulerLeft.width = 16 * dpr;
         rulerLeft.height = h * dpr;
 
         const ctxTop = rulerTop.getContext('2d');
@@ -102,10 +198,10 @@
         container.removeChild(tempEl);
 
         // Draw Top Ruler
-        ctxTop.clearRect(0, 0, w, 20);
+        ctxTop.clearRect(0, 0, w, 16);
         ctxTop.fillStyle = textColor;
         ctxTop.strokeStyle = color;
-        ctxTop.font = '9px "Share Tech Mono", monospace';
+        ctxTop.font = '8px "Share Tech Mono", monospace';
         ctxTop.textAlign = 'center';
         ctxTop.textBaseline = 'top';
         ctxTop.beginPath();
@@ -113,23 +209,23 @@
         for (let x = 0; x <= w; x += 10) {
             if (x % 100 === 0) {
                 ctxTop.moveTo(x, 0);
-                ctxTop.lineTo(x, 20);
+                ctxTop.lineTo(x, 16);
                 if (x > 0) ctxTop.fillText(x.toString(), x, 1);
             } else if (x % 50 === 0) {
                 ctxTop.moveTo(x, 0);
-                ctxTop.lineTo(x, 10);
+                ctxTop.lineTo(x, 8);
             } else {
                 ctxTop.moveTo(x, 0);
-                ctxTop.lineTo(x, 5);
+                ctxTop.lineTo(x, 4);
             }
         }
         ctxTop.stroke();
 
         // Draw Left Ruler
-        ctxLeft.clearRect(0, 0, 20, h);
+        ctxLeft.clearRect(0, 0, 16, h);
         ctxLeft.fillStyle = textColor;
         ctxLeft.strokeStyle = color;
-        ctxLeft.font = '9px "Share Tech Mono", monospace';
+        ctxLeft.font = '8px "Share Tech Mono", monospace';
         ctxLeft.textAlign = 'right';
         ctxLeft.textBaseline = 'middle';
         ctxLeft.beginPath();
@@ -137,7 +233,7 @@
         for (let y = 0; y <= h; y += 10) {
             if (y % 100 === 0) {
                 ctxLeft.moveTo(0, y);
-                ctxLeft.lineTo(20, y);
+                ctxLeft.lineTo(16, y);
                 if (y > 0) {
                     ctxLeft.save();
                     ctxLeft.translate(10, y);
@@ -237,6 +333,8 @@
     }
 
     document.addEventListener('mousemove', (e) => {
+        if (!isActive || isFrozen) return;
+
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
 
@@ -266,7 +364,8 @@
     }, true);
 
     document.addEventListener('mouseout', (e) => {
-        if (!e.relatedTarget) {
+        if (!isActive) return;
+        if (!e.relatedTarget && !isFrozen) {
             crosshairX.style.display = 'none';
             crosshairY.style.display = 'none';
             infoBox.style.display = 'none';
@@ -278,6 +377,7 @@
     }, true);
 
     document.addEventListener('mouseover', (e) => {
+        if (!isActive || isFrozen) return;
         crosshairX.style.display = 'block';
         crosshairY.style.display = 'block';
     }, true);
