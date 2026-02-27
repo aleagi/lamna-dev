@@ -112,29 +112,97 @@
 }
 
 :root[data-lamna-theme="ambar-crt"] {
-    /* Amber CRT Theme */
+    /* Amber CRT Theme with Distortions */
     --lamna-bg: rgba(10, 5, 0, 0.95);
     --lamna-backdrop: none;
-    --lamna-border: 1px solid #ffb000;
-    --lamna-box-shadow: 0 0 10px rgba(255, 176, 0, 0.5), inset 0 0 10px rgba(255, 176, 0, 0.2);
+    --lamna-border: 1px solid rgba(255, 176, 0, 0.8);
+    --lamna-box-shadow: 0 0 10px rgba(255, 176, 0, 0.5), inset 0 0 15px rgba(255, 176, 0, 0.3);
     --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px),
         repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px);
+    /* Chromatic Aberration Text Shadow */
     --lamna-text-color: #ffb000;
-    --lamna-text-shadow: 0 0 5px rgba(255, 176, 0, 0.7);
+    --lamna-text-shadow: -0.8px 0 0px rgba(255, 0, 0, 0.6), 0.8px 0 0px rgba(0, 255, 0, 0.6), 0 0 6px rgba(255, 176, 0, 0.9);
     --lamna-tag-color: #ffb000;
-    --lamna-tag-shadow: 0 0 5px rgba(255, 176, 0, 0.7);
+    --lamna-tag-shadow: -0.8px 0 0px rgba(255, 0, 0, 0.6), 0.8px 0 0px rgba(0, 255, 0, 0.6), 0 0 6px rgba(255, 176, 0, 0.9);
     --lamna-class-color: #d48800;
-    --lamna-class-shadow: 0 0 3px rgba(212, 136, 0, 0.7);
+    --lamna-class-shadow: 0 0 4px rgba(212, 136, 0, 0.8);
     --lamna-dims-color: #ffcc66;
-    --lamna-dims-shadow: 0 0 4px rgba(255, 204, 102, 0.7);
-    --lamna-ruler-color: rgba(255, 176, 0, 0.5);
-    --lamna-crosshair-color: rgba(255, 176, 0, 0.4);
+    --lamna-dims-shadow: -0.5px 0 0px rgba(255, 0, 0, 0.5), 0.5px 0 0px rgba(0, 255, 0, 0.5), 0 0 5px rgba(255, 204, 102, 0.8);
+    --lamna-ruler-color: rgba(255, 176, 0, 0.6);
+    --lamna-crosshair-color: rgba(255, 176, 0, 0.5);
     --lamna-hover-outline: rgba(255, 176, 0, 0.9);
-    --lamna-hover-bg: rgba(255, 176, 0, 0.2);
+    --lamna-hover-bg: rgba(255, 176, 0, 0.15);
     --lamna-coords-bg: rgba(25, 15, 0, 0.8);
     --lamna-coords-color: #ffb000;
     --lamna-extra-text: #c08000;
     --lamna-separator: rgba(255, 176, 0, 0.3);
+}
+
+@keyframes lamna-crt-flicker {
+    0% {
+        opacity: 0.98;
+    }
+
+    5% {
+        opacity: 0.88;
+    }
+
+    10% {
+        opacity: 0.98;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.98;
+    }
+
+    52% {
+        opacity: 0.90;
+    }
+
+    54% {
+        opacity: 0.98;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes lamna-crt-scanline {
+    0% {
+        top: -10%;
+    }
+
+    100% {
+        top: 110%;
+    }
+}
+
+:root[data-lamna-theme="ambar-crt"] #lamna-info-box {
+    animation: lamna-crt-flicker 0.15s infinite;
+    border-radius: 8px;
+    /* Simulate CRT tube curvature */
+    overflow: hidden;
+    position: relative;
+}
+
+:root[data-lamna-theme="ambar-crt"] #lamna-info-box::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(255, 176, 0, 0) 0%, rgba(255, 176, 0, 0.15) 50%, rgba(255, 176, 0, 0) 100%);
+    opacity: 0.8;
+    animation: lamna-crt-scanline 6s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 /* Base UI wrapper */
