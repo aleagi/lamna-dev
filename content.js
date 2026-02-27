@@ -137,7 +137,7 @@
         const rootVars = ['--lamna-bg', '--lamna-text-color', '--lamna-tag-color', '--lamna-class-color', '--lamna-dims-color', '--lamna-ruler-color', '--lamna-crosshair-color', '--lamna-hover-outline', '--lamna-hover-bg', '--lamna-coords-bg', '--lamna-coords-color', '--lamna-separator', '--lamna-extra-text'];
         rootVars.forEach(v => document.documentElement.style.removeProperty(v));
 
-        if (theme === 'ambar' || theme === 'matrix' || theme === 'dracula' || theme === 'ambar-crt') {
+        if (theme === 'ambar' || theme === 'matrix' || theme === 'dracula' || theme === 'ambar-crt' || theme === 'matrix-crt') {
             document.documentElement.setAttribute('data-lamna-theme', theme);
         } else if (theme === 'dynamic') {
             document.documentElement.removeAttribute('data-lamna-theme');
@@ -187,10 +187,11 @@
     }
 
     if (chrome && chrome.storage && chrome.storage.sync) {
-        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom', 'lamnaActive'], function (result) {
+        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom', 'lamnaActive', 'lamnaOpacity'], function (result) {
             applyTheme(result.lamnaTheme || 'dynamic');
             currentWcag = result.lamnaWcag || 'AA';
             document.documentElement.style.setProperty('--lamna-zoom', result.lamnaZoom || 1.0);
+            document.documentElement.style.setProperty('--lamna-opacity', result.lamnaOpacity !== undefined ? result.lamnaOpacity : 1.0);
             if (result.lamnaActive !== undefined) {
                 isActive = result.lamnaActive;
                 container.style.display = isActive ? 'block' : 'none';
@@ -206,6 +207,9 @@
             }
             if (changes.lamnaZoom) {
                 document.documentElement.style.setProperty('--lamna-zoom', changes.lamnaZoom.newValue);
+            }
+            if (changes.lamnaOpacity) {
+                document.documentElement.style.setProperty('--lamna-opacity', changes.lamnaOpacity.newValue);
             }
             if (changes.lamnaActive) {
                 isActive = changes.lamnaActive.newValue;
@@ -243,6 +247,8 @@
 
     let hoveredElement = null;
     let isCtrlPressed = false;
+    let isCtrlFixed = false;
+    let lastCtrlPressTime = 0;
     let isFrozen = false;
     let lastMouseX = 0;
     let lastMouseY = 0;
@@ -267,11 +273,18 @@
         if (e.key.toLowerCase() === 'l' && e.altKey && !e.ctrlKey && !e.shiftKey) {
             isActive = !isActive;
             container.style.display = isActive ? 'block' : 'none';
-            chrome.storage.sync.set({ lamnaActive: isActive });
+            try {
+                if (chrome.runtime && chrome.runtime.id) {
+                    chrome.storage.sync.set({ lamnaActive: isActive });
+                }
+            } catch (err) {
+                console.debug("Lamna Dev Analyzer: Extension context invalidated.");
+            }
             if (!isActive && hoveredElement) {
                 hoveredElement.classList.remove('lamna-hovered-element');
                 hoveredElement = null;
                 isFrozen = false;
+                isCtrlFixed = false;
                 infoBox.classList.remove('lamna-frozen');
             }
             return;
@@ -296,10 +309,19 @@
         }
 
         if (e.key === 'Control' && !isCtrlPressed) {
+            const now = Date.now();
+            if (now - lastCtrlPressTime < 400) {
+                // Double tap Ctrl! Toggle fixed mode
+                isCtrlFixed = !isCtrlFixed;
+                lastCtrlPressTime = 0;
+            } else {
+                lastCtrlPressTime = now;
+            }
+
             isCtrlPressed = true;
             if (hoveredElement) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
 
-            // Poll for dynamic changes (like :hover, :active, transitions) while Ctrl is held
+            // Poll for dynamic changes (like :hover, :active, transitions) while Ctrl is held or fixed
             if (!updateInterval) {
                 updateInterval = setInterval(() => {
                     if (hoveredElement && !isFrozen) {
@@ -313,11 +335,13 @@
     document.addEventListener('keyup', (e) => {
         if (e.key === 'Control' && isCtrlPressed) {
             isCtrlPressed = false;
-            if (updateInterval) {
-                clearInterval(updateInterval);
-                updateInterval = null;
+            if (!isCtrlFixed) {
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                    updateInterval = null;
+                }
+                if (hoveredElement && !isFrozen) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
             }
-            if (hoveredElement && !isFrozen) updateInfoBox(hoveredElement, lastMouseX, lastMouseY);
         }
     }, true);
 
@@ -439,7 +463,7 @@
         boxHTML += `<br><span class="lamna-dims">W: ${Math.round(rect.width)}px | H: ${Math.round(rect.height)}px</span>`;
 
         // Add advanced info if Ctrl is pressed
-        if (isCtrlPressed) {
+        if (isCtrlPressed || isCtrlFixed) {
             // Remove hover class to read original style computed values accurately
             const hadHoverClass = target.classList.contains('lamna-hovered-element');
             if (hadHoverClass) target.classList.remove('lamna-hovered-element');

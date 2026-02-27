@@ -113,21 +113,20 @@
 
 :root[data-lamna-theme="ambar-crt"] {
     /* Amber CRT Theme with Distortions */
-    --lamna-bg: rgba(10, 5, 0, 0.95);
+    --lamna-bg: rgba(0, 0, 0, 0.85);
     --lamna-backdrop: none;
     --lamna-border: 1px solid rgba(255, 176, 0, 0.8);
     --lamna-box-shadow: 0 0 10px rgba(255, 176, 0, 0.5), inset 0 0 15px rgba(255, 176, 0, 0.3);
-    --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px);
-    /* Chromatic Aberration Text Shadow */
+    --lamna-bg-image: none;
+    /* Clean Text Formatting */
     --lamna-text-color: #ffb000;
-    --lamna-text-shadow: -0.8px 0 0px rgba(255, 0, 0, 0.6), 0.8px 0 0px rgba(0, 255, 0, 0.6), 0 0 6px rgba(255, 176, 0, 0.9);
+    --lamna-text-shadow: none;
     --lamna-tag-color: #ffb000;
-    --lamna-tag-shadow: -0.8px 0 0px rgba(255, 0, 0, 0.6), 0.8px 0 0px rgba(0, 255, 0, 0.6), 0 0 6px rgba(255, 176, 0, 0.9);
+    --lamna-tag-shadow: none;
     --lamna-class-color: #d48800;
-    --lamna-class-shadow: 0 0 4px rgba(212, 136, 0, 0.8);
+    --lamna-class-shadow: none;
     --lamna-dims-color: #ffcc66;
-    --lamna-dims-shadow: -0.5px 0 0px rgba(255, 0, 0, 0.5), 0.5px 0 0px rgba(0, 255, 0, 0.5), 0 0 5px rgba(255, 204, 102, 0.8);
+    --lamna-dims-shadow: none;
     --lamna-ruler-color: rgba(255, 176, 0, 0.6);
     --lamna-crosshair-color: rgba(255, 176, 0, 0.5);
     --lamna-hover-outline: rgba(255, 176, 0, 0.9);
@@ -184,10 +183,9 @@
 
 :root[data-lamna-theme="ambar-crt"] #lamna-info-box {
     animation: lamna-crt-flicker 0.15s infinite;
-    border-radius: 8px;
+    border-radius: 16px;
     /* Simulate CRT tube curvature */
     overflow: hidden;
-    position: relative;
 }
 
 :root[data-lamna-theme="ambar-crt"] #lamna-info-box::after {
@@ -197,8 +195,56 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 20px;
+    height: 40px;
     background: linear-gradient(to bottom, rgba(255, 176, 0, 0) 0%, rgba(255, 176, 0, 0.15) 50%, rgba(255, 176, 0, 0) 100%);
+    opacity: 0.8;
+    animation: lamna-crt-scanline 6s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+:root[data-lamna-theme="matrix-crt"] {
+    /* Matrix CRT Theme with Distortions */
+    --lamna-bg: rgba(0, 10, 0, 0.85);
+    --lamna-backdrop: none;
+    --lamna-border: 1px solid rgba(0, 255, 65, 0.8);
+    --lamna-box-shadow: 0 0 10px rgba(0, 255, 65, 0.5), inset 0 0 15px rgba(0, 255, 65, 0.3);
+    --lamna-bg-image: none;
+    /* Clean Text Formatting */
+    --lamna-text-color: #00FF41;
+    --lamna-text-shadow: none;
+    --lamna-tag-color: #00FF41;
+    --lamna-tag-shadow: none;
+    --lamna-class-color: #008F11;
+    --lamna-class-shadow: none;
+    --lamna-dims-color: #8cffae;
+    --lamna-dims-shadow: none;
+    --lamna-ruler-color: rgba(0, 255, 65, 0.6);
+    --lamna-crosshair-color: rgba(0, 255, 65, 0.5);
+    --lamna-hover-outline: rgba(0, 255, 65, 0.9);
+    --lamna-hover-bg: rgba(0, 255, 65, 0.15);
+    --lamna-coords-bg: rgba(0, 15, 0, 0.8);
+    --lamna-coords-color: #00FF41;
+    --lamna-extra-text: #008F11;
+    --lamna-separator: rgba(0, 255, 65, 0.3);
+}
+
+:root[data-lamna-theme="matrix-crt"] #lamna-info-box {
+    animation: lamna-crt-flicker 0.15s infinite;
+    border-radius: 16px;
+    /* Simulate CRT tube curvature */
+    overflow: hidden;
+}
+
+:root[data-lamna-theme="matrix-crt"] #lamna-info-box::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(0, 255, 65, 0) 0%, rgba(0, 255, 65, 0.15) 50%, rgba(0, 255, 65, 0) 100%);
     opacity: 0.8;
     animation: lamna-crt-scanline 6s linear infinite;
     pointer-events: none;
@@ -235,17 +281,11 @@
 #lamna-info-box {
     position: fixed;
     padding: 4px 6px;
-    background-color: var(--lamna-bg);
-    background-image: var(--lamna-bg-image);
-    backdrop-filter: var(--lamna-backdrop);
-    -webkit-backdrop-filter: var(--lamna-backdrop);
-    border: var(--lamna-border);
     border-radius: 2px;
-    box-shadow: var(--lamna-box-shadow);
     color: var(--lamna-text-color);
     font-family: inherit;
     font-size: 12px;
-    line-height: 1.2;
+    line-height: 1.5;
     pointer-events: none;
     z-index: 999999;
     text-shadow: var(--lamna-text-shadow);
@@ -253,6 +293,25 @@
     min-width: unset;
     transform: scale(var(--lamna-zoom, 1));
     transform-origin: top left;
+}
+
+#lamna-info-box::before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--lamna-bg);
+    background-image: var(--lamna-bg-image);
+    backdrop-filter: var(--lamna-backdrop);
+    -webkit-backdrop-filter: var(--lamna-backdrop);
+    border: var(--lamna-border);
+    border-radius: inherit;
+    box-shadow: var(--lamna-box-shadow);
+    opacity: var(--lamna-opacity, 1);
+    z-index: -1;
+    pointer-events: none;
 }
 
 #lamna-info-box.lamna-frozen {

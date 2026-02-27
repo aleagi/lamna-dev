@@ -11,15 +11,17 @@
   - **Amber LCD:** For old-school use. Faded borders, on-screen pixels simulating a true Matrix LCD board (Ambar Theme).
   - **Amber CRT Monitor:** An immersive orange/amber glow simulating an old, heavily contrasted CRT terminal.
   - **The Matrix:** A dark-green "hacker" theme directly extracted from terminal displays.
+  - **Matrix CRT Monitor:** An immersive dark-green glow simulating an old, heavily contrasted CRT terminal.
   - **Dracula (Vampire):** The world-famous dark theme with its iconic purple borders, cyan texts, and pink accents.
   - **Dynamic (Auto):** (The Default) The extension intelligently detects the dominant color or theme-color of the website you are browsing and automatically calculates the colors, generating its own color scheme!
-- **Detective Mode (Hold `Ctrl`):** Instantly reveals the complete hierarchy and hidden styling attributes, such as:
+- **Detective Mode (Hold `Ctrl`):** Instantly reveals the complete hierarchy and hidden styling attributes.
+  - Double tap `Ctrl` to lock the box in extended mode permanently. Double tap again to disable it.
   - Spacing (Paddings, Margins, and Box-Sizing)
   - Positioning (Top, Left, Right, Bottom, and Z-Index)
   - Real and Visual Colors (Text Color, Background Color, Opacity, and literal RGB rendering with a visualized palette)
   - Typography (Font family and computed sizes).
 - **Inspection Freeze (Hit `L`):** Need to copy the class of an inspected element? Just by pressing the `L` key while pointing at the element, the box will be locked on the screen (Freeze mode), allowing you to use the mouse to select text inside the *Info box*. Press `L` again (or click outside) to unfreeze.
-- **Automatic Contrast Analysis (WCAG):** When in Detective Mode (holding `Ctrl`), the extension calculates the contrast ratio (Luminance ratio) between the text color and the actual background color rendered on the element. It approves or fails accessibility based on the requirement level (A, AA, or AAA) set in the extension panel.
+- **Automatic Contrast Analysis (WCAG):** When in Detective Mode (holding or locked with `Ctrl`), the extension calculates the contrast ratio (Luminance ratio) between the text color and the actual background color rendered on the element. It approves or fails accessibility based on the requirement level (A, AA, or AAA) set in the extension panel.
 - **Adjustable Zoom:** Through the extension button in the browser (Popup), you can freely change the scale/zoom of the display box (between 0.5x and 2.0x).
 
 ## ⌨️ Essential Shortcuts
