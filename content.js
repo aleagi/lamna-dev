@@ -137,7 +137,7 @@
         const rootVars = ['--lamna-bg', '--lamna-text-color', '--lamna-tag-color', '--lamna-class-color', '--lamna-dims-color', '--lamna-ruler-color', '--lamna-crosshair-color', '--lamna-hover-outline', '--lamna-hover-bg', '--lamna-coords-bg', '--lamna-coords-color', '--lamna-separator', '--lamna-extra-text'];
         rootVars.forEach(v => document.documentElement.style.removeProperty(v));
 
-        if (theme === 'ambar' || theme === 'matrix') {
+        if (theme === 'ambar' || theme === 'matrix' || theme === 'dracula' || theme === 'ambar-crt') {
             document.documentElement.setAttribute('data-lamna-theme', theme);
         } else if (theme === 'dynamic') {
             document.documentElement.removeAttribute('data-lamna-theme');

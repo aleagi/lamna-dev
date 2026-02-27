@@ -9,7 +9,9 @@
 - **Complete Theme System:** Adjusts to your preference.
   - **Neon Tech:** Semi-transparent boxes with Glassmorphism aesthetics, clean and focused borders.
   - **Amber LCD:** For old-school use. Faded borders, on-screen pixels simulating a true Matrix LCD board (Ambar Theme).
+  - **Amber CRT Monitor:** An immersive orange/amber glow simulating an old, heavily contrasted CRT terminal.
   - **The Matrix:** A dark-green "hacker" theme directly extracted from terminal displays.
+  - **Dracula (Vampire):** The world-famous dark theme with its iconic purple borders, cyan texts, and pink accents.
   - **Dynamic (Auto):** (The Default) The extension intelligently detects the dominant color or theme-color of the website you are browsing and automatically calculates the colors, generating its own color scheme!
 - **Detective Mode (Hold `Ctrl`):** Instantly reveals the complete hierarchy and hidden styling attributes, such as:
   - Spacing (Paddings, Margins, and Box-Sizing)

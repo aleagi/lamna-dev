@@ -77,6 +77,66 @@
     --lamna-separator: rgba(0, 255, 65, 0.3);
 }
 
+:root[data-lamna-theme="dracula"] {
+    /* Dracula Theme */
+    --lamna-bg: rgba(40, 42, 54, 0.95);
+    --lamna-backdrop: none;
+    --lamna-border: none;
+    --lamna-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --lamna-bg-image: none;
+    --lamna-text-color: #f8f8f2;
+    --lamna-text-shadow: none;
+    --lamna-tag-color: #ff79c6;
+    /* Pink */
+    --lamna-tag-shadow: none;
+    --lamna-class-color: #f1fa8c;
+    /* Yellow */
+    --lamna-class-shadow: none;
+    --lamna-dims-color: #50fa7b;
+    /* Green */
+    --lamna-dims-shadow: none;
+    --lamna-ruler-color: rgba(139, 233, 253, 0.8);
+    /* Cyan */
+    --lamna-crosshair-color: rgba(139, 233, 253, 0.6);
+    /* Cyan */
+    --lamna-hover-outline: rgba(189, 147, 249, 0.8);
+    /* Purple outline */
+    --lamna-hover-bg: rgba(68, 71, 90, 0.5);
+    /* Current line / Selection */
+    --lamna-coords-bg: rgba(68, 71, 90, 0.8);
+    --lamna-coords-color: #8be9fd;
+    /* Cyan */
+    --lamna-extra-text: #6272a4;
+    /* Comment */
+    --lamna-separator: rgba(98, 114, 164, 0.4);
+}
+
+:root[data-lamna-theme="ambar-crt"] {
+    /* Amber CRT Theme */
+    --lamna-bg: rgba(10, 5, 0, 0.95);
+    --lamna-backdrop: none;
+    --lamna-border: 1px solid #ffb000;
+    --lamna-box-shadow: 0 0 10px rgba(255, 176, 0, 0.5), inset 0 0 10px rgba(255, 176, 0, 0.2);
+    --lamna-bg-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255, 176, 0, 0.08) 1px, rgba(255, 176, 0, 0.08) 2px);
+    --lamna-text-color: #ffb000;
+    --lamna-text-shadow: 0 0 5px rgba(255, 176, 0, 0.7);
+    --lamna-tag-color: #ffb000;
+    --lamna-tag-shadow: 0 0 5px rgba(255, 176, 0, 0.7);
+    --lamna-class-color: #d48800;
+    --lamna-class-shadow: 0 0 3px rgba(212, 136, 0, 0.7);
+    --lamna-dims-color: #ffcc66;
+    --lamna-dims-shadow: 0 0 4px rgba(255, 204, 102, 0.7);
+    --lamna-ruler-color: rgba(255, 176, 0, 0.5);
+    --lamna-crosshair-color: rgba(255, 176, 0, 0.4);
+    --lamna-hover-outline: rgba(255, 176, 0, 0.9);
+    --lamna-hover-bg: rgba(255, 176, 0, 0.2);
+    --lamna-coords-bg: rgba(25, 15, 0, 0.8);
+    --lamna-coords-color: #ffb000;
+    --lamna-extra-text: #c08000;
+    --lamna-separator: rgba(255, 176, 0, 0.3);
+}
+
 /* Base UI wrapper */
 #lamna-container {
     font-family: var(--lamna-font-family);
