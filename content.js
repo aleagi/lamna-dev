@@ -19,7 +19,7 @@
 
     let currentTheme = 'dynamic'; // Default to start
     let currentWcag = 'AA'; // Default WCAG level
-    let isActive = true; // Is the extension HUD toggled on?
+    let isActive = false; // Is the extension HUD toggled on? Starts OFF by default.
 
     function getBrightness(r, g, b) {
         return (r * 299 + g * 587 + b * 114) / 1000;
@@ -187,15 +187,11 @@
     }
 
     if (chrome && chrome.storage && chrome.storage.sync) {
-        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom', 'lamnaActive', 'lamnaOpacity'], function (result) {
+        chrome.storage.sync.get(['lamnaTheme', 'lamnaWcag', 'lamnaZoom', 'lamnaOpacity'], function (result) {
             applyTheme(result.lamnaTheme || 'dynamic');
             currentWcag = result.lamnaWcag || 'AA';
             document.documentElement.style.setProperty('--lamna-zoom', result.lamnaZoom || 1.0);
             document.documentElement.style.setProperty('--lamna-opacity', result.lamnaOpacity !== undefined ? result.lamnaOpacity : 1.0);
-            if (result.lamnaActive !== undefined) {
-                isActive = result.lamnaActive;
-                container.style.display = isActive ? 'block' : 'none';
-            }
         });
 
         chrome.storage.onChanged.addListener(function (changes, namespace) {
@@ -210,14 +206,6 @@
             }
             if (changes.lamnaOpacity) {
                 document.documentElement.style.setProperty('--lamna-opacity', changes.lamnaOpacity.newValue);
-            }
-            if (changes.lamnaActive) {
-                isActive = changes.lamnaActive.newValue;
-                container.style.display = isActive ? 'block' : 'none';
-                if (!isActive) {
-                    isFrozen = false;
-                    infoBox.classList.remove('lamna-frozen');
-                }
             }
         });
     }
@@ -273,13 +261,6 @@
         if (e.key.toLowerCase() === 'l' && e.altKey && !e.ctrlKey && !e.shiftKey) {
             isActive = !isActive;
             container.style.display = isActive ? 'block' : 'none';
-            try {
-                if (chrome.runtime && chrome.runtime.id) {
-                    chrome.storage.sync.set({ lamnaActive: isActive });
-                }
-            } catch (err) {
-                console.debug("Lamna Dev Analyzer: Extension context invalidated.");
-            }
             if (!isActive && hoveredElement) {
                 hoveredElement.classList.remove('lamna-hovered-element');
                 hoveredElement = null;

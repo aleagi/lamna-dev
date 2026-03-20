@@ -253,6 +253,7 @@
 
 /* Base UI wrapper */
 #lamna-container {
+    display: none;
     font-family: var(--lamna-font-family);
 }
 
